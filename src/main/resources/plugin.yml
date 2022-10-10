@@ -1,0 +1,4 @@
+name: Sumoteam
+version: '${project.version}'
+main: me.vovari2.sumoteam.Sumoteam
+api-version: 1.19
