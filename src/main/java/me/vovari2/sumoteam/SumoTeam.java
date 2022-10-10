@@ -1,33 +1,84 @@
 package me.vovari2.sumoteam;
 
+import me.vovari2.sumoteam.Modes.STFieldMode;
+import me.vovari2.sumoteam.Modes.STGameMode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
-import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class Sumoteam extends JavaPlugin {
+import java.util.HashMap;
+import java.util.Random;
+
+public final class SumoTeam extends JavaPlugin {
+
+    static SumoTeam plugin;
+    public static SumoTeamTask task;
+
+    static boolean inLobby;
+    static STGameMode gameMode = STGameMode.CLASSIC;
+    static STFieldMode fieldMode = STFieldMode.CLASSIC;
+
+    static HashMap<STName, STTeam> teams;
+    public static HashMap<String, String> playerHits;
+    static STName winTeam;
+
+
 
     @Override
     public void onEnable() {
-        // Plugin startup logic
+        getLogger().info(ChatColor.BLUE + "Loading...");
+        plugin = this;
 
+        // Чтение данных с конфига
+        getConfig().options().copyDefaults();
+        saveDefaultConfig();
+
+        SumoTeamConfigTeams.create();
+        SumoTeamConfigTeams.get().options().copyDefaults(true);
+        SumoTeamConfigTeams.save();
+
+        SumoTeamListener.scaleForward = getConfig().getDouble("ScaleForward");
+        SumoTeamListener.scaleUp = getConfig().getDouble("ScaleUp");
+
+        ComponentUtils.Initialization();
+        WorldUtils.Initialization(getServer().getWorld(getConfig().getString("World")));
+        PlayerUtils.Initialization();
+        ScoreboardUtils.Initialization();
+        STTeam.Initialization();
+        playerHits = new HashMap<>();
+
+        // SumoTeam
+        getServer().getPluginManager().registerEvents(new SumoTeamListener(), this);
+        getCommand("sumoteam").setExecutor(new SumoTeamCommands());
+        getCommand("sumoteam").setTabCompleter(new SumoTeamTabCompleter());
+
+        getLogger().info(ChatColor.GREEN + "Enabled!");
+
+        task = new SumoTeamTask();
+        task.runTaskTimer(this, 0L, 1L);
     }
 
     @Override
     public void onDisable() {
-        // Plugin shutdown logic
+        for (STTeam team : teams.values())
+            team.team.unregister();
+        if (ScoreboardUtils.scoreboard.getObjective("SumoTeam") != null)
+            ScoreboardUtils.scoreboard.getObjective("SumoTeam").unregister();
+
+        SumoTeamTask.RemoveIce(new Random());
     }
 
-    public static void HelpMessage(Player player) {
+    static void HelpMessage(Player player) {
         player.sendMessage("");
         player.sendMessage(Component.text(" ")
-                .append(Component.text("=== ", TextColor.color(255, 255, 85)))
-                .append(Component.text("Помощь для ", TextColor.color(85, 255, 255)))
+                .append(Component.text("=== ", ComponentUtils.Yellow))
+                .append(Component.text("Помощь для ", ComponentUtils.Aqua)
                 .append(Component.text("/sumoteam", ComponentUtils.Green))
-                .append(Component.text(" ===", TextColor.color(255, 255, 85))));
+                .append(Component.text(" ===", ComponentUtils.Yellow))));
         player.sendMessage(Component.text("  /st help", ComponentUtils.Green)
-                .append(Component.text(" - Получение информации по командам ивента", TextColor.color(255,255,255))));
+                .append(Component.text(" - Получение информации по командам ивента", ComponentUtils.White)));
         player.sendMessage(Component.text("  /st trampoline ", ComponentUtils.Green)
                 .append(Component.text("[forward/up]", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Изменяемое направление батута:").append(Component.text("\n  - forward (Вперёд)\n  - up (Вверх)", ComponentUtils.Gray)))))
                 .append(Component.text(" "))
@@ -54,5 +105,12 @@ public final class Sumoteam extends JavaPlugin {
                 .append(Component.text(" - Режим изменения поля", ComponentUtils.White)));
         player.sendMessage(Component.text("  /st start", ComponentUtils.Green).append(Component.text(" - Запуск ивента (перед этим, нужно распределить игроков на игровые команды)", ComponentUtils.White)));
         player.sendMessage(Component.text("  /st stop", ComponentUtils.Green).append(Component.text(" - Остановка ивента (убирает скорборд и возвращает игроков)", ComponentUtils.White)));
+    }
+
+    public static boolean CheckStringOnDouble(String str){
+        try{
+            Double.parseDouble(str);
+            return true;
+        } catch(Exception e) { return false; }
     }
 }
