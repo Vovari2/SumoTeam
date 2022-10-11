@@ -29,7 +29,7 @@ public class ScoreboardUtils {
         teamScores.getScore(ChatColor.YELLOW + "  Жёлтые: " + ChatColor.WHITE + OutputCountPlayerTeam(SumoTeam.teams.get(STName.YELLOW).team.getSize())).setScore(3);
         teamScores.getScore(" ").setScore(2);
         teamScores.getScore("").setScore(1);
-        teamScores.getScore(ChatColor.GOLD + "www.playstrix.net").setScore(0);
+        teamScores.getScore(ChatColor.GOLD + " playstrix.net").setScore(0);
     }
     static void ResetScores(){
         for (String entry : scoreboard.getEntries())

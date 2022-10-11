@@ -60,9 +60,9 @@ public class SumoTeamListener implements Listener {
                     for (Player selectPlayer : Bukkit.getOnlinePlayers())
                         if (WorldUtils.inMap(selectPlayer.getLocation())){
                             if (!SumoTeam.playerHits.containsKey(player.getName()))
-                                selectPlayer.sendMessage(Component.text(name, ScoreboardUtils.scoreboard.getEntityTeam(player).color()).append(Component.text(" упал", TextColor.color(255,255,255))));
-                            else
-                                selectPlayer.sendMessage(Component.text(name, ScoreboardUtils.scoreboard.getEntityTeam(player).color()).append(Component.text(" был скинут ", TextColor.color(255,255,255))).append(Component.text(SumoTeam.playerHits.get(name), ScoreboardUtils.scoreboard.getEntityTeam(SumoTeam.plugin.getServer().getPlayer(SumoTeam.playerHits.get(name))).color())));
+                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, ScoreboardUtils.scoreboard.getEntityTeam(player).color()).append(Component.text(" упал", ComponentUtils.White))));
+                            else if (PlayerUtils.ListNamePlayers().contains(SumoTeam.playerHits.get(name)))
+                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, ScoreboardUtils.scoreboard.getEntityTeam(player).color()).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(SumoTeam.playerHits.get(name), ScoreboardUtils.scoreboard.getEntityTeam(PlayerUtils.HashMapPlayers().get(SumoTeam.playerHits.get(name))).color()))));
                             if (selectPlayer.getName().equals(SumoTeam.playerHits.get(name)))
                                 selectPlayer.playSound(selectPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
                         }
@@ -71,17 +71,20 @@ public class SumoTeamListener implements Listener {
                     SumoTeamCommands.LeaveTeam(player);
                     player.getInventory().clear();
 
+                    ScoreboardUtils.ResetScores();
+                    ScoreboardUtils.LoadScores();
+
                     player.showTitle(Title.title(Component.text("Повезёт в другой раз"),Component.text("")));
 
 
                     int Red = SumoTeam.teams.get(STName.RED).team.getSize(), Blu = SumoTeam.teams.get(STName.BLUE).team.getSize(), Gre = SumoTeam.teams.get(STName.GREEN).team.getSize(), Yel = SumoTeam.teams.get(STName.YELLOW).team.getSize();
-                    if (Blu==0 && Gre==0 && Yel==0)
+                    if (Blu==0 && Gre==0 && Yel==0 && Red > 0)
                         SumoTeam.teams.get(STName.RED).WinTeam();
-                    else if (Red==0 && Gre==0 && Yel==0)
+                    else if (Red==0 && Gre==0 && Yel==0 && Blu > 0)
                         SumoTeam.teams.get(STName.BLUE).WinTeam();
-                    else if (Red==0 && Blu==0 && Yel==0)
+                    else if (Red==0 && Blu==0 && Yel==0 && Gre > 0)
                         SumoTeam.teams.get(STName.GREEN).WinTeam();
-                    else if (Red==0 && Blu==0 && Gre==0)
+                    else if (Red==0 && Blu==0 && Gre==0 && Yel > 0)
                         SumoTeam.teams.get(STName.YELLOW).WinTeam();
                 }
             }

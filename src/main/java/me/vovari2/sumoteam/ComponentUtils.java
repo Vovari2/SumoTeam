@@ -11,6 +11,7 @@ class ComponentUtils {
 
     static Map<TextDecoration, TextDecoration.State> textBoldAndNotItalic;
     static Map<TextDecoration, TextDecoration.State> textBoldAndItalic;
+
     static TextColor White = TextColor.color(255,255,255);
     static TextColor Gold = TextColor.color(255, 170, 0);
     static TextColor Green = TextColor.color(85, 255, 85);

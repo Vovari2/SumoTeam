@@ -13,10 +13,9 @@ public class SumoTeamTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-
         if (sender instanceof Player) {
             Player player = (Player) sender;
-            if (player.hasPermission("events.sumoteam.*")){
+            if (player.hasPermission("sumoteam.*")){
                 if (args.length == 1) {
                     List<String> commands = new ArrayList<>();
                     commands.add("help");
@@ -29,10 +28,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
                     commands.add("stop");
                     commands.add("gamemode");
                     commands.add("fieldmode");
-                    commands.forEach(str -> {
-                        if (!str.toLowerCase().startsWith(args[1].toLowerCase()))
-                            commands.remove(str);
-                    });
+                    commands.removeIf(str -> !str.toLowerCase().startsWith(args[0].toLowerCase()));
                     return commands;
                 }
                 else if (args.length == 2) {
@@ -41,10 +37,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
                             List<String> directions = new ArrayList<>();
                             directions.add("forward");
                             directions.add("up");
-                            directions.forEach(str -> {
-                                if (!str.toLowerCase().startsWith(args[1].toLowerCase()))
-                                    directions.remove(str);
-                            });
+                            directions.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));
                             return directions;
                         }
                         case "join":
@@ -55,30 +48,21 @@ public class SumoTeamTabCompleter implements TabCompleter {
                             tools.add("max");
                             tools.add("save");
                             tools.add("load");
-                            tools.forEach(str -> {
-                                if (!str.toLowerCase().startsWith(args[1].toLowerCase()))
-                                    tools.remove(str);
-                            });
+                            tools.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));
                             return tools;
                         }
                         case "gamemode":{
                             List<String> gamemodes = new ArrayList<>();
                             gamemodes.add("CLASSIC");
                             gamemodes.add("KING_OF_THE_HILL");
-                            gamemodes.forEach(str -> {
-                                if (!str.toLowerCase().startsWith(args[1].toLowerCase()))
-                                    gamemodes.remove(str);
-                            });
+                            gamemodes.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));
                             return gamemodes;
                         }
                         case "fieldmode":{
                             List<String> fieldmodes = new ArrayList<>();
                             fieldmodes.add("CLASSIC");
                             fieldmodes.add("ICE_PLATFORM");
-                            fieldmodes.forEach(str -> {
-                                if (!str.toLowerCase().startsWith(args[1].toLowerCase()))
-                                    fieldmodes.remove(str);
-                            });
+                            fieldmodes.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));
                             return fieldmodes;
                         }
                     }
@@ -87,10 +71,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
                     if (args[0].equals("join")){
                         List<String> onlinePlayers = PlayerUtils.ListNamePlayers();
                         onlinePlayers.add("*");
-                        onlinePlayers.forEach(playerName -> {
-                            if (!playerName.toLowerCase().startsWith(args[2].toLowerCase()))
-                                onlinePlayers.remove(playerName);
-                        });
+                        onlinePlayers.removeIf(str -> !str.toLowerCase().startsWith(args[2].toLowerCase()));
                         return onlinePlayers;
                     }
                 }
@@ -107,10 +88,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
         listteam.add("Yellow");
         if (args[0].equals("join"))
             listteam.add("-");
-        listteam.forEach(str -> {
-            if (!str.toLowerCase().startsWith(args[1].toLowerCase()))
-                listteam.remove(str);
-        });
+        listteam.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));
         return listteam;
     }
 

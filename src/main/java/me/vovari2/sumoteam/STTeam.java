@@ -50,15 +50,16 @@ public class STTeam {
             if(namePlayers.contains(player.getName()))
                 team.addEntity(player);
 
-        for (String playerName : team.getEntries())
+        for (String playerName : team.getEntries()){
             SumoTeam.plugin.getServer().getPlayer(playerName).getInventory().clear();
+            SumoTeam.plugin.getServer().getPlayer(playerName).teleport(SumoTeam.teams.get(STName.DEFAULT).field);
+        }
 
         for (Player player : Bukkit.getOnlinePlayers()){
             if (WorldUtils.inMap(player.getLocation())){
                 player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂");
                 player.sendMessage("\n\n        Команда " + word + ChatColor.WHITE + " победила!");
-                String message = SumoTeamCommands.ListTeam(this);
-                player.sendMessage("    " + message.substring(11, message.length()-1));
+                player.sendMessage("  " + SumoTeamCommands.ListTeam(this));
                 player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂\n\n");
             }
         }

@@ -5,6 +5,8 @@ import me.vovari2.sumoteam.Modes.STGameMode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,15 +15,17 @@ import java.util.Random;
 
 public final class SumoTeam extends JavaPlugin {
 
-    static SumoTeam plugin;
-    public static SumoTeamTask task;
+    public static SumoTeam plugin;
+    static SumoTeamTask task;
 
-    static boolean inLobby;
+    static boolean inLobby = true;
     static STGameMode gameMode = STGameMode.CLASSIC;
     static STFieldMode fieldMode = STFieldMode.CLASSIC;
+    static int fillProcent = 50;
+    static int countIce = 46;
 
     static HashMap<STName, STTeam> teams;
-    public static HashMap<String, String> playerHits;
+    static HashMap<String, String> playerHits;
     static STName winTeam;
 
 
@@ -67,6 +71,7 @@ public final class SumoTeam extends JavaPlugin {
         if (ScoreboardUtils.scoreboard.getObjective("SumoTeam") != null)
             ScoreboardUtils.scoreboard.getObjective("SumoTeam").unregister();
 
+        WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location (WorldUtils.world, -6741, 157, 1218), Material.AIR, Material.BARRIER);
         SumoTeamTask.RemoveIce(new Random());
     }
 

@@ -1,4 +1,15 @@
 name: Sumoteam
-version: '${project.version}'
-main: me.vovari2.sumoteam.Sumoteam
+version: 1.0
+main: me.vovari2.sumoteam.SumoTeam
+author: Vovari2
 api-version: 1.19
+commands:
+  sumoteam:
+    description: Используется для работы с ивентом SumoTeam
+    usage: /<command>
+    permission: sumoteam.*
+    aliases:
+      - st
+permissions:
+  sumoteam.*:
+    description: Права на все команды плагина (нужно выдать проводящему ивенты)

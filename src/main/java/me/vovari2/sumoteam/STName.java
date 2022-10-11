@@ -31,4 +31,10 @@ public enum STName {
             return STName.UNSET;
         return STName.valueOf(str.toUpperCase());
     }
+    public static boolean isSTName(String str){
+        for (STName name : STName.values())
+            if (name.getString().equals(str.toLowerCase()))
+                return true;
+        return false;
+    }
 }
