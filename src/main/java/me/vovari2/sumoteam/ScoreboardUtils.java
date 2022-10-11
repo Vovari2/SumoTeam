@@ -17,6 +17,7 @@ public class ScoreboardUtils {
         scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         teamScores = scoreboard.registerNewObjective("SumoTeam", "dummy", Component.text("SUMOTEAM", ComponentUtils.Gold, TextDecoration.BOLD));
         teamScores.setDisplaySlot(DisplaySlot.SIDEBAR);
+        empty = Bukkit.getScoreboardManager().getNewScoreboard();
     }
 
 

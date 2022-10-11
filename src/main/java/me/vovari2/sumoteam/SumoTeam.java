@@ -4,14 +4,17 @@ import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.Modes.STGameMode;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Set;
 
 public final class SumoTeam extends JavaPlugin {
 
@@ -48,7 +51,6 @@ public final class SumoTeam extends JavaPlugin {
 
         ComponentUtils.Initialization();
         WorldUtils.Initialization(getServer().getWorld(getConfig().getString("World")));
-        PlayerUtils.Initialization();
         ScoreboardUtils.Initialization();
         STTeam.Initialization();
         playerHits = new HashMap<>();
@@ -117,5 +119,28 @@ public final class SumoTeam extends JavaPlugin {
             Double.parseDouble(str);
             return true;
         } catch(Exception e) { return false; }
+    }
+
+    static ArrayList<String> ListNamePlayers(){
+        ArrayList<String> ListPlayers = new ArrayList<>();
+        for(Player player : Bukkit.getOnlinePlayers()){
+            ListPlayers.add(player.getName());
+        }
+        return ListPlayers;
+    }
+    static HashMap<String, Player> HashMapPlayers(){
+        HashMap<String, Player> HashMapPlayers = new HashMap<>();
+        for(Player player : Bukkit.getOnlinePlayers()){
+            HashMapPlayers.put(player.getName(), player);
+        }
+        return HashMapPlayers;
+    }
+    static String[] ConvertToArrayString(Set<String> list){
+        String[] array = new String[list.size()]; int i = 0;
+        for (String playerName : list) {
+            array[i] = playerName;
+            i++;
+        }
+        return array;
     }
 }

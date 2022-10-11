@@ -22,8 +22,6 @@ public class SumoTeamTask extends BukkitRunnable {
                 Random R = new Random();
                 RemoveIce(R);
                 for (int i = 0; i < SumoTeam.countIce; i++) {
-                    if (WorldUtils.honeyCombs[i].isIce)
-                        continue;
                     HoneyComb selectComb;
                     do {
                         selectComb = WorldUtils.honeyCombs[R.nextInt(WorldUtils.honeyCombs.length - 1)];

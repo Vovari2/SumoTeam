@@ -41,11 +41,8 @@ public class STTeam {
     ArrayList<String> getListPlayers(){
         return new ArrayList<>(team.getEntries());
     }
-    Color getColor(){
-        return Color.fromRGB(colorR, colorG, colorB);
-    }
     void WinTeam(){
-        List<String> namePlayers = PlayerUtils.ListNamePlayers();
+        List<String> namePlayers = SumoTeam.ListNamePlayers();
         for (Player player : fallPlayers)
             if(namePlayers.contains(player.getName()))
                 team.addEntity(player);

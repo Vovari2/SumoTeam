@@ -69,7 +69,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
                 }
                 else if (args.length == 3){
                     if (args[0].equals("join")){
-                        List<String> onlinePlayers = PlayerUtils.ListNamePlayers();
+                        List<String> onlinePlayers = SumoTeam.ListNamePlayers();
                         onlinePlayers.add("*");
                         onlinePlayers.removeIf(str -> !str.toLowerCase().startsWith(args[2].toLowerCase()));
                         return onlinePlayers;

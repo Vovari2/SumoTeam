@@ -5,8 +5,6 @@ import me.vovari2.sumoteam.Honeycomb.CombType;
 import me.vovari2.sumoteam.Honeycomb.HoneyComb;
 import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.Modes.STGameMode;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,7 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.structure.Structure;
 import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -84,7 +81,7 @@ public class SumoTeamCommands implements CommandExecutor{
                                 }
                                 else if (args.length == 3){
                                     if (!args[2].equals("*")){
-                                        HashMap<String, Player> Players = PlayerUtils.HashMapPlayers();
+                                        HashMap<String, Player> Players = SumoTeam.HashMapPlayers();
                                         if (Players.containsKey(args[2])){
                                             if (STName.isSTName(args[1]))
                                                 AddingTeams(SumoTeam.teams.get(STName.getName(args[1])), Players.get(args[2]), player);
@@ -173,19 +170,19 @@ public class SumoTeamCommands implements CommandExecutor{
                                             DivisionTeam(SumoTeam.teams.get(STName.GREEN), countPlayersTeam);
                                             DivisionTeam(SumoTeam.teams.get(STName.YELLOW), countPlayersTeam);
 
-                                            String[] arrayDefault = PlayerUtils.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
+                                            String[] arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
                                             int countDefault = arrayDefault.length;
                                             Player selectPlayer;
                                             if (countDefault > 2){
                                                 selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault-1)]);
                                                 JoinTeam(SumoTeam.teams.get(STName.GREEN), selectPlayer);
                                             }
-                                            arrayDefault = PlayerUtils.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
+                                            arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
                                             if (countDefault > 1){
                                                 selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault-1)]);
                                                 JoinTeam(SumoTeam.teams.get(STName.BLUE), selectPlayer);
                                             }
-                                            arrayDefault = PlayerUtils.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
+                                            arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
                                             if (countDefault > 0){
                                                 selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[0]);
                                                 JoinTeam(SumoTeam.teams.get(STName.RED), selectPlayer);
@@ -215,21 +212,7 @@ public class SumoTeamCommands implements CommandExecutor{
                             if (SumoTeam.inLobby) {
                                 SumoTeam.inLobby = false;
 
-                                if (SumoTeam.fieldMode.equals(STFieldMode.ICE_PLATFORM) && SumoTeam.countIce == 89){
-                                    Random R = new Random();
-                                    for (HoneyComb comb : WorldUtils.honeyCombs){
-                                        comb.isIce = true;
-                                        Structure struct;
-                                        if (comb.type.equals(CombType.TRAMPOLINE)){
-                                            if (comb.isGlass)
-                                                struct = WorldUtils.structures.get(CombType.TRAMPOLINE).get(CombColor.ICE).getStructures()[1];
-                                            else struct = WorldUtils.structures.get(CombType.TRAMPOLINE).get(CombColor.ICE).getStructures()[0];
-                                        }
-                                        else struct = WorldUtils.structures.get(comb.type).get(CombColor.ICE).getRandomVariation(R);
-                                        struct.place(new Location(WorldUtils.world, comb.X, comb.Y, comb.Z), false, comb.rotation, comb.mirror, 0, 1, new Random());
-                                    }
-                                }
-                                SumoTeamTask.Tick = 400;
+                                SumoTeamTask.Tick = 390;
 
                                 StartTeam(SumoTeam.teams.get(STName.RED));
                                 StartTeam(SumoTeam.teams.get(STName.BLUE));
@@ -276,7 +259,7 @@ public class SumoTeamCommands implements CommandExecutor{
                                             SumoTeam.gameMode = STGameMode.KING_OF_THE_HILL;
                                             player.sendMessage(TextUtils.getEditText("Режим игры изменён на " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
                                         } break;
-                                        default: TextUtils.errorCommandIncorrectly(player);;
+                                        default: TextUtils.errorCommandIncorrectly(player);
                                     }
                                 } else TextUtils.warningEventGoingOn(player);
                             }
@@ -353,7 +336,7 @@ public class SumoTeamCommands implements CommandExecutor{
     private void DivisionTeam(STTeam team, int countPlayersTeam) {
         for (int i = 0; i < countPlayersTeam; i++) {
             STTeam teamDefault = SumoTeam.teams.get(STName.DEFAULT);
-            String[] arrayDefault = PlayerUtils.ConvertToArrayString(teamDefault.team.getEntries());
+            String[] arrayDefault = SumoTeam.ConvertToArrayString(teamDefault.team.getEntries());
             Player selectPlayer;
             if (teamDefault.team.getSize() == 1)
                 selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[0]);
@@ -364,7 +347,7 @@ public class SumoTeamCommands implements CommandExecutor{
     }
 
     private void DivisionTeamLoad(STTeam team, String nameTeam) {
-        HashMap<String, Player> listPlayers = PlayerUtils.HashMapPlayers();
+        HashMap<String, Player> listPlayers = SumoTeam.HashMapPlayers();
         for (String playerName : SumoTeamConfigTeams.get().getStringList("Team" + nameTeam + "Players"))
             if (listPlayers.containsKey(playerName)){
                 Player selectPlayer = listPlayers.get(playerName);
