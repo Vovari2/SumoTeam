@@ -12,21 +12,25 @@ import java.util.Random;
 
 public class SumoTeamTask extends BukkitRunnable {
 
+    private long countMillis;
     public static int Tick = 0;
     @Override
     public void run() {
         if (SumoTeam.inLobby)
             return;
+        int Index = 0;
         if (Tick >= 400){
+            countMillis = System.currentTimeMillis();
             if (SumoTeam.fieldMode.equals(STFieldMode.ICE_PLATFORM) && SumoTeam.countIce > 0 && SumoTeam.countIce < 89){
-                Random R = new Random();
+                Random R = new Random();;
                 RemoveIce(R);
                 for (int i = 0; i < SumoTeam.countIce; i++) {
                     HoneyComb selectComb;
                     do {
-                        selectComb = WorldUtils.honeyCombs[R.nextInt(WorldUtils.honeyCombs.length - 1)];
+                        selectComb = WorldUtils.honeyCombs[Math.abs(R.nextInt()) % 89];
                     } while (selectComb.isIce);
                     selectComb.isIce = true;
+                    Index++;
                     Structure struct;
                     if (selectComb.type.equals(CombType.TRAMPOLINE)) {
                         if (selectComb.isGlass)
@@ -37,6 +41,7 @@ public class SumoTeamTask extends BukkitRunnable {
                     struct.place(new Location(WorldUtils.world, selectComb.X, selectComb.Y, selectComb.Z), false, selectComb.rotation, selectComb.mirror, 0, 1, new Random());
                 }
             }
+            SumoTeam.plugin.getLogger().info("Поле обновлено (" + Index + ", " + SumoTeam.countIce + "): " + (System.currentTimeMillis() - countMillis) + " ms");
             Tick = 0;
         }
         Tick++;

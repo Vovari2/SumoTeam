@@ -31,8 +31,6 @@ public final class SumoTeam extends JavaPlugin {
     static HashMap<String, String> playerHits;
     static STName winTeam;
 
-
-
     @Override
     public void onEnable() {
         getLogger().info(ChatColor.BLUE + "Loading...");
