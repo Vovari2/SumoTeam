@@ -19,7 +19,7 @@ public class StructureHoneyComb {
     public Structure getRandomVariation(Random R){
         if (structures.length < 2)
             return structures[0];
-        return structures[R.nextInt(structures.length-1)];
+        return structures[Math.abs(R.nextInt()) % structures.length];
     }
 
     public Structure[] getStructures(){

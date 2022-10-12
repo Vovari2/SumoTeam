@@ -4,10 +4,7 @@ import me.vovari2.sumoteam.Honeycomb.CombColor;
 import me.vovari2.sumoteam.Honeycomb.CombType;
 import me.vovari2.sumoteam.Honeycomb.HoneyComb;
 import me.vovari2.sumoteam.Honeycomb.StructureHoneyComb;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 import org.bukkit.structure.StructureManager;
@@ -117,5 +114,16 @@ public class WorldUtils {
 
     static boolean isFillRight(int x, int y, int z, ArrayList<Material> materials){
         return materials.contains(world.getType(new Location(world, x + 3, y, z))) && materials.contains(world.getType(new Location(world, x - 3, y, z))) && materials.contains(world.getType(new Location(world, x, y, z + 3))) && materials.contains(world.getType(new Location(world, x, y, z - 3)));
+    }
+
+    static HoneyComb[] cloneHoneyCombs(HoneyComb[] oldHoneyCombs){
+        HoneyComb[] newHoneyCombs = new HoneyComb[89];
+        for(int i = 0; i < newHoneyCombs.length; i++)
+            try{
+                newHoneyCombs[i] = oldHoneyCombs[i].clone();
+            } catch(Exception error) {
+                SumoTeam.plugin.getLogger().info(ChatColor.RED + error.getMessage());
+            }
+        return newHoneyCombs;
     }
 }

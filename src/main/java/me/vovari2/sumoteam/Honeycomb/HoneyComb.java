@@ -3,7 +3,7 @@ package me.vovari2.sumoteam.Honeycomb;
 import org.bukkit.block.structure.Mirror;
 import org.bukkit.block.structure.StructureRotation;
 
-public class HoneyComb {
+public class HoneyComb implements Cloneable{
     public boolean isIce = false;
     public boolean isGlass = false;
     public CombColor color;
@@ -34,6 +34,9 @@ public class HoneyComb {
         this.color = color;
         this.Location(X,Y,Z);
         this.type = type;
+    }
+    public HoneyComb clone() throws CloneNotSupportedException{
+        return (HoneyComb) super.clone();
     }
 
 }
