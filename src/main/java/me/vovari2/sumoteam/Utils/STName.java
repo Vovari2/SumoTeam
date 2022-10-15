@@ -1,4 +1,4 @@
-package me.vovari2.sumoteam;
+package me.vovari2.sumoteam.Utils;
 
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;

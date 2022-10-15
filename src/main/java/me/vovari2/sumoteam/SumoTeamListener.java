@@ -1,5 +1,6 @@
 package me.vovari2.sumoteam;
 
+import me.vovari2.sumoteam.Utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.*;
@@ -38,7 +39,7 @@ public class SumoTeamListener implements Listener {
 
         if (switchTrampoline) {
             Location location = player.getLocation();
-            if (location.clone().subtract(0.0D, 1.0D, 0.0D).getBlock().getType().equals(Material.EMERALD_BLOCK) && location.getBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE)) {
+            if (location.clone().subtract(0.0D, 0.2D, 0.0D).getBlock().getType().equals(Material.EMERALD_BLOCK) && location.getBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE)) {
                 Vector direction = location.getDirection();
                 player.setVelocity(new Vector(direction.getX() * 0.4D * scaleForward,0.85D * scaleUp,direction.getZ() * 0.4D * scaleForward));
             }
@@ -75,9 +76,9 @@ public class SumoTeamListener implements Listener {
                     for (Player selectPlayer : Bukkit.getOnlinePlayers())
                         if (WorldUtils.inMap(selectPlayer.getLocation())){
                             if (!SumoTeam.playerHits.containsKey(player.getName()))
-                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, ScoreboardUtils.scoreboard.getEntityTeam(player).color()).append(Component.text(" упал", ComponentUtils.White))));
+                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" упал", ComponentUtils.White))));
                             else if (SumoTeam.ListNamePlayers().contains(SumoTeam.playerHits.get(name)))
-                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, ScoreboardUtils.scoreboard.getEntityTeam(player).color()).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(SumoTeam.playerHits.get(name), ScoreboardUtils.scoreboard.getEntityTeam(SumoTeam.HashMapPlayers().get(SumoTeam.playerHits.get(name))).color()))));
+                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(SumoTeam.playerHits.get(name), STTeam.getColorTeam(SumoTeam.HashMapPlayers().get(SumoTeam.playerHits.get(name)).getName())))));
                             if (selectPlayer.getName().equals(SumoTeam.playerHits.get(name)))
                                 selectPlayer.playSound(selectPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
                         }

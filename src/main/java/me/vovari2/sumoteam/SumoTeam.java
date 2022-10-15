@@ -2,6 +2,7 @@ package me.vovari2.sumoteam;
 
 import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.Modes.STGameMode;
+import me.vovari2.sumoteam.Utils.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
@@ -19,20 +20,21 @@ import java.util.Set;
 public final class SumoTeam extends JavaPlugin {
 
     public static SumoTeam plugin;
-    static SumoTeamTask task;
+    public static SumoTeamTask task;
 
-    static boolean inLobby = true;
-    static STGameMode gameMode = STGameMode.CLASSIC;
-    static STFieldMode fieldMode = STFieldMode.CLASSIC;
-    static int fillProcent = 50;
-    static int countIce = 46;
+    public static boolean inLobby = true;
+    public static STGameMode gameMode = STGameMode.CLASSIC;
+    public static STFieldMode fieldMode = STFieldMode.CLASSIC;
+    public static int fillProcent = 50;
+    public static int countIce = 46;
 
-    static HashMap<STName, STTeam> teams;
-    static HashMap<String, String> playerHits;
-    static STName winTeam;
+    public static HashMap<STName, STTeam> teams;
+    public static HashMap<String, String> playerHits;
+    public static STName winTeam;
 
     @Override
     public void onEnable() {
+        long miliseconds = System.currentTimeMillis();
         getLogger().info(ChatColor.BLUE + "Loading...");
         plugin = this;
 
@@ -51,6 +53,7 @@ public final class SumoTeam extends JavaPlugin {
         WorldUtils.Initialization(getServer().getWorld(getConfig().getString("World")));
         ScoreboardUtils.Initialization();
         STTeam.Initialization();
+        StructureUtils.Initialization();
         playerHits = new HashMap<>();
 
         // SumoTeam
@@ -58,10 +61,10 @@ public final class SumoTeam extends JavaPlugin {
         getCommand("sumoteam").setExecutor(new SumoTeamCommands());
         getCommand("sumoteam").setTabCompleter(new SumoTeamTabCompleter());
 
-        getLogger().info(ChatColor.GREEN + "Enabled!");
-
         task = new SumoTeamTask();
         task.runTaskTimer(this, 0L, 1L);
+
+        getLogger().info(ChatColor.GREEN + "Enabled for " + (System.currentTimeMillis() - miliseconds) + " ms");
     }
 
     @Override
@@ -75,7 +78,7 @@ public final class SumoTeam extends JavaPlugin {
         SumoTeamTask.RemoveIce(new Random());
     }
 
-    static void HelpMessage(Player player) {
+    public static void HelpMessage(Player player) {
         player.sendMessage("");
         player.sendMessage(Component.text(" ")
                 .append(Component.text("=== ", ComponentUtils.Yellow))
@@ -119,21 +122,21 @@ public final class SumoTeam extends JavaPlugin {
         } catch(Exception e) { return false; }
     }
 
-    static ArrayList<String> ListNamePlayers(){
+    public static ArrayList<String> ListNamePlayers(){
         ArrayList<String> ListPlayers = new ArrayList<>();
         for(Player player : Bukkit.getOnlinePlayers()){
             ListPlayers.add(player.getName());
         }
         return ListPlayers;
     }
-    static HashMap<String, Player> HashMapPlayers(){
+    public static HashMap<String, Player> HashMapPlayers(){
         HashMap<String, Player> HashMapPlayers = new HashMap<>();
         for(Player player : Bukkit.getOnlinePlayers()){
             HashMapPlayers.put(player.getName(), player);
         }
         return HashMapPlayers;
     }
-    static String[] ConvertToArrayString(Set<String> list){
+    public static String[] ConvertToArrayString(Set<String> list){
         String[] array = new String[list.size()]; int i = 0;
         for (String playerName : list) {
             array[i] = playerName;

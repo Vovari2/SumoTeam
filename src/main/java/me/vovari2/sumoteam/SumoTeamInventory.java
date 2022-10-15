@@ -1,5 +1,7 @@
 package me.vovari2.sumoteam;
 
+import me.vovari2.sumoteam.Utils.ComponentUtils;
+import me.vovari2.sumoteam.Utils.STName;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Color;

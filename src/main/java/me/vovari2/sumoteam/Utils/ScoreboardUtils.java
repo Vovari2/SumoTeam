@@ -1,5 +1,6 @@
-package me.vovari2.sumoteam;
+package me.vovari2.sumoteam.Utils;
 
+import me.vovari2.sumoteam.SumoTeam;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
@@ -9,11 +10,11 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
 public class ScoreboardUtils {
-    static Scoreboard scoreboard;
-    static Scoreboard empty;
-    static Objective teamScores;
+    public static Scoreboard scoreboard;
+    public static Scoreboard empty;
+    public static Objective teamScores;
 
-    static void Initialization() {
+    public static void Initialization() {
         scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         if (ScoreboardUtils.scoreboard.getObjective("SumoTeam") != null)
             ScoreboardUtils.scoreboard.getObjective("SumoTeam").unregister();
@@ -23,7 +24,7 @@ public class ScoreboardUtils {
     }
 
 
-    static void LoadScores(){
+    public static void LoadScores(){
         teamScores.getScore("  ").setScore(8);
         teamScores.getScore(ChatColor.BOLD + "   Игроки:").setScore(7);
         teamScores.getScore(ChatColor.RED + "  Красные: " + ChatColor.WHITE + OutputCountPlayerTeam(SumoTeam.teams.get(STName.RED).team.getSize())).setScore(6);
@@ -34,7 +35,7 @@ public class ScoreboardUtils {
         teamScores.getScore("").setScore(1);
         teamScores.getScore(ChatColor.GOLD + " playstrix.net").setScore(0);
     }
-    static void ResetScores(){
+    public static void ResetScores(){
         for (String entry : scoreboard.getEntries())
             teamScores.getScore(entry).resetScore();
     }

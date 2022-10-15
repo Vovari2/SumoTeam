@@ -1,5 +1,7 @@
-package me.vovari2.sumoteam;
+package me.vovari2.sumoteam.Utils;
 
+import me.vovari2.sumoteam.SumoTeam;
+import me.vovari2.sumoteam.SumoTeamCommands;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
@@ -9,23 +11,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.scoreboard.Team;
 
+import java.awt.*;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 public class STTeam {
-    STName name;
-    Team team;
-    Location room;
-    Location field;
-    String word;
-    ChatColor chatColor;
-    int colorR;
-    int colorG;
-    int colorB;
-    ArrayList<Player> fallPlayers;
-    TextColor getTextColor() { return TextColor.color(colorR, colorG, colorB); }
-    STTeam(STName teamName, String wordGS, ChatColor CColor, int R, int G, int B, Team ITeam) {
+    public STName name;
+    public Team team;
+    public Location room;
+    public Location field;
+    public String word;
+    public ChatColor chatColor;
+    public int colorR;
+    public int colorG;
+    public int colorB;
+    public ArrayList<Player> fallPlayers;
+    public TextColor getTextColor() { return TextColor.color(colorR, colorG, colorB); }
+    public STTeam(STName teamName, String wordGS, ChatColor CColor, int R, int G, int B, Team ITeam) {
         name = teamName;
         word = CColor + wordGS;
         chatColor = CColor;
@@ -38,10 +42,10 @@ public class STTeam {
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         fallPlayers = new ArrayList<>();
     }
-    ArrayList<String> getListPlayers(){
+    public ArrayList<String> getListPlayers(){
         return new ArrayList<>(team.getEntries());
     }
-    void WinTeam(){
+    public void WinTeam(){
         List<String> namePlayers = SumoTeam.ListNamePlayers();
         for (Player player : fallPlayers)
             if(namePlayers.contains(player.getName()))
@@ -76,7 +80,7 @@ public class STTeam {
         WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location (WorldUtils.world, -6741, 157, 1234), Material.BARRIER, Material.AIR);
     }
 
-    static void Initialization(){
+    public static void Initialization(){
         SumoTeam.teams = new HashMap<>();
         SumoTeam.teams.put(STName.RED, new STTeam(STName.RED, "Красных", ChatColor.RED,255, 85, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamRed")));
         SumoTeam.teams.get(STName.RED).room = new Location(WorldUtils.world, -6756.5, 72, 1231.5,-90,0);
@@ -100,5 +104,12 @@ public class STTeam {
 
         SumoTeam.teams.put(STName.UNSET, new STTeam(STName.UNSET,"Неопределенных", ChatColor.GRAY,170, 170, 170, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamUnset")));
         SumoTeam.teams.get(STName.UNSET).room = new Location(WorldUtils.world, -6748.5, 72, 1226.5,-180,0);
+    }
+
+    public static TextColor getColorTeam(String playerName){
+        for (STTeam team : SumoTeam.teams.values())
+            if (team.team.getEntries().contains(playerName))
+                return TextColor.color(team.colorR, team.colorB, team.colorG);
+        return ComponentUtils.White;
     }
 }

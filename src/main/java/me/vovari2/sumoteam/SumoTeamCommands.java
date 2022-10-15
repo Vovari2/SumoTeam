@@ -1,16 +1,13 @@
 package me.vovari2.sumoteam;
 
-import me.vovari2.sumoteam.Honeycomb.CombColor;
-import me.vovari2.sumoteam.Honeycomb.CombType;
-import me.vovari2.sumoteam.Honeycomb.HoneyComb;
 import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.Modes.STGameMode;
+import me.vovari2.sumoteam.Utils.*;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.structure.Structure;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
