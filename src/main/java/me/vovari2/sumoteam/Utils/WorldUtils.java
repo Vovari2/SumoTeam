@@ -2,18 +2,17 @@ package me.vovari2.sumoteam.Utils;
 
 import org.bukkit.*;
 
-import java.util.ArrayList;
-
 public class WorldUtils {
     public static World world;
     public static Location pointCenter;
     public static Location pointDefault;
-    public static Location[] fireworkPosition = new Location[]{new Location(world, -6748.5, 149, 1216.5), new Location(world, -6740.5, 149, 1221.5), new Location(world, -6740.5, 149, 1231.5), new Location(world, -6748.5, 149, 1236.5), new Location(world, -6756.5, 149, 1231.5), new Location(world, -6756.5, 149, 1221.5)};
+    public static Location[] fireworkPosition;
 
     public static void Initialization(World newWorld) {
         world = newWorld;
         pointCenter = new Location(world, -6748.5, 122, 1226.5);
         pointDefault = new Location(world, -6748.5, 69, 1216.5);
+        fireworkPosition = new Location[]{new Location(world, -6748.5, 149, 1216.5), new Location(world, -6740.5, 149, 1221.5), new Location(world, -6740.5, 149, 1231.5), new Location(world, -6748.5, 149, 1236.5), new Location(world, -6756.5, 149, 1231.5), new Location(world, -6756.5, 149, 1221.5)};
     }
     public static boolean inMap(Location playerLocation){
         if (!playerLocation.getWorld().equals(WorldUtils.world))

@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.util.Vector;
@@ -17,19 +18,24 @@ public class SumoTeamListener implements Listener {
     public static boolean switchTrampoline = true;
     public static double scaleForward;
     public static double scaleUp;
-    private boolean isScoreboard = true;
+
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        PlayerUtils.add(event.getPlayer());
+    }
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         SumoTeam.teams.get(STName.UNSET).team.addEntity(event.getPlayer());
         SumoTeam.teams.get(STName.UNSET).team.removeEntity(event.getPlayer());
+        PlayerUtils.remove(event.getPlayer());
     }
 
     @EventHandler
     public void onDamagePlayer(EntityDamageByEntityEvent event){
         if (event.getDamager() instanceof Player && event.getEntity() instanceof Player){
             Player damager = ((Player) event.getDamager()).getPlayer(), player = ((Player) event.getEntity()).getPlayer();
-            SumoTeam.playerHits.put(player.getName(), damager.getName());
+            PlayerUtils.playerHits.put(player.getName(), damager.getName());
         }
     }
 
@@ -45,20 +51,10 @@ public class SumoTeamListener implements Listener {
             }
         }
 
-        if (!SumoTeam.inLobby){
-            for (Player selectPlayer : Bukkit.getServer().getOnlinePlayers()){
-                if (WorldUtils.inMap(selectPlayer.getLocation()) && isScoreboard){
-                    selectPlayer.setScoreboard(ScoreboardUtils.scoreboard);
-                    isScoreboard = false;
-                }
-                else if (!WorldUtils.inMap(selectPlayer.getLocation()) &&!isScoreboard){
-                    selectPlayer.setScoreboard(ScoreboardUtils.empty);
-                    isScoreboard = true;
-                }
-            }
-        }
+        PlayerUtils.add(player);
+        PlayerUtils.remove(player);
 
-        if (WorldUtils.inMap(player.getLocation())){
+        if (PlayerUtils.players.containsKey(player.getName())){
             String name = player.getName();
 
             if (player.getLocation().distance(WorldUtils.pointDefault) <= 3 && !SumoTeam.teams.get(STName.DEFAULT).team.getEntries().contains(name)){
@@ -73,13 +69,12 @@ public class SumoTeamListener implements Listener {
                 double X = player.getLocation().getX(), Y = player.getLocation().getY(), Z = player.getLocation().getZ();
                 if (Y <= 126 && Y >= 120 && X >= -6816.7 && Z <= 1305.7 && X <= -6680.3 && Z >= 1147.3){
                     // Показ сообщение другим игрокам, о том что игрок упал
-                    for (Player selectPlayer : Bukkit.getOnlinePlayers())
-                        if (WorldUtils.inMap(selectPlayer.getLocation())){
-                            if (!SumoTeam.playerHits.containsKey(player.getName()))
+                    for (Player selectPlayer : PlayerUtils.players.values()) {
+                            if (!PlayerUtils.playerHits.containsKey(player.getName()))
                                 selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" упал", ComponentUtils.White))));
-                            else if (SumoTeam.ListNamePlayers().contains(SumoTeam.playerHits.get(name)))
-                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(SumoTeam.playerHits.get(name), STTeam.getColorTeam(SumoTeam.HashMapPlayers().get(SumoTeam.playerHits.get(name)).getName())))));
-                            if (selectPlayer.getName().equals(SumoTeam.playerHits.get(name)))
+                            else if (PlayerUtils.players.containsKey(PlayerUtils.playerHits.get(name)))
+                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(PlayerUtils.playerHits.get(name), STTeam.getColorTeam(PlayerUtils.players.get(PlayerUtils.playerHits.get(name)).getName())))));
+                            if (selectPlayer.getName().equals(PlayerUtils.playerHits.get(name)))
                                 selectPlayer.playSound(selectPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
                         }
                     SumoTeam.teams.get(STName.getName(ScoreboardUtils.scoreboard.getEntityTeam(player).getName().substring(8).toLowerCase())).fallPlayers.add(Bukkit.getPlayer(player.getName()));

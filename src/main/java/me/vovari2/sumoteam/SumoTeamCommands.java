@@ -91,7 +91,7 @@ public class SumoTeamCommands implements CommandExecutor{
                                         if (!STName.isSTName(team))
                                             TextUtils.errorTeamIncorrectly(player);
                                         else {
-                                            for (Player selectPlayer : Bukkit.getServer().getOnlinePlayers())
+                                            for (Player selectPlayer : PlayerUtils.players.values())
                                                 if (team.equals("-"))
                                                     LeaveTeam(selectPlayer);
                                                 else JoinTeam(SumoTeam.teams.get(STName.getName(team)), selectPlayer);
@@ -112,9 +112,20 @@ public class SumoTeamCommands implements CommandExecutor{
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.YELLOW))));
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.DEFAULT))));
                             } else if (args.length == 2){
-                                if (STName.isSTName(args[1]))
-                                    player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.getName(args[1])))));
-                                else TextUtils.errorTeamIncorrectly(player);
+                                if (!args[1].equals("*")){
+                                    if (STName.isSTName(args[1]))
+                                        player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.getName(args[1])))));
+                                    else TextUtils.errorTeamIncorrectly(player);
+                                }
+                                else {
+                                    if (PlayerUtils.players.size() > 0) {
+                                        StringBuilder messageList = new StringBuilder("Игроки на ивенте:" + " (" + ChatColor.GRAY + PlayerUtils.players.size() + ChatColor.WHITE + "): ");
+                                        for (String playerName : PlayerUtils.players.keySet())
+                                            messageList.append(ChatColor.GRAY).append(playerName).append(", ");
+                                        player.sendMessage(TextUtils.getReadyText(messageList.substring(0, messageList.length()-2)));
+                                    } else player.sendMessage(TextUtils.getReadyText("На ивенте нет игроков!"));
+                                }
+
                             }
                         } break;
                         case "division": {
@@ -223,7 +234,7 @@ public class SumoTeamCommands implements CommandExecutor{
                         } break;
                         case "stop": {
                             if (!SumoTeam.inLobby){
-                                SumoTeam.playerHits = new HashMap<>();
+                                PlayerUtils.playerHits = new HashMap<>();
 
                                 SumoTeam.inLobby = true;
                                 ScoreboardUtils.ResetScores();
@@ -293,12 +304,21 @@ public class SumoTeamCommands implements CommandExecutor{
                                 } else TextUtils.warningEventGoingOn(player);
                             }
                         } break;
+                        case "reload":{
+                            if (args.length > 1)
+                                TextUtils.errorTooManyArguments(player);
+                            else {
+                                plugin.onDisable();
+                                plugin.onEnable();
+                            }
+                        } break;
                         default: TextUtils.errorCommandIncorrectly(player);
                     }
                 }
             }
             else player.sendMessage(TextUtils.getErrorText(ChatColor.RED + "У вас нет прав на использование этой команды!"));
         }
+        else sender.sendMessage(TextUtils.getErrorText("Вы не игрок!"));
         return true;
     }
     public static void JoinTeam(STTeam team, Player selectPlayer){
@@ -323,9 +343,9 @@ public class SumoTeamCommands implements CommandExecutor{
 
     public static String ListTeam(STTeam team) {
         if (team.team.getEntries().size() > 0) {
-            String messageList = "Игроки команды " + team.word + ChatColor.WHITE + " (" + team.chatColor + team.team.getEntries().size() + ChatColor.WHITE + "): ";
+            StringBuilder messageList = new StringBuilder("Игроки команды " + team.word + ChatColor.WHITE + " (" + team.chatColor + team.team.getEntries().size() + ChatColor.WHITE + "): ");
             for (String playerName : team.team.getEntries())
-                messageList = messageList.concat(ChatColor.GRAY + playerName + ", ");
+                messageList.append(ChatColor.GRAY).append(playerName).append(", ");
             return messageList.substring(0, messageList.length()-2);
         } else return "В команде " + team.word + ChatColor.WHITE + " нет игроков";
     }

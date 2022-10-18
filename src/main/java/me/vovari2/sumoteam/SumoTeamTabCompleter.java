@@ -28,6 +28,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
                     commands.add("stop");
                     commands.add("gamemode");
                     commands.add("fieldmode");
+                    commands.add("reload");
                     commands.removeIf(str -> !str.toLowerCase().startsWith(args[0].toLowerCase()));
                     return commands;
                 }
@@ -88,6 +89,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
         listteam.add("Yellow");
         if (args[0].equals("join"))
             listteam.add("-");
+        else listteam.add("*");
         listteam.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));
         return listteam;
     }

@@ -5,11 +5,9 @@ import me.vovari2.sumoteam.Honeycomb.CombType;
 import me.vovari2.sumoteam.Honeycomb.CombStructures;
 import me.vovari2.sumoteam.Honeycomb.HoneyComb;
 import me.vovari2.sumoteam.SumoTeam;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.structure.StructureManager;
 
 import java.util.HashMap;
 import java.util.Random;
@@ -38,12 +36,11 @@ public class StructureUtils {
                                 }
                             }
                             else honeyCombs[i] = new HoneyComb(CombColor.getColor(centerMaterial),x-4, y, z-4);
-                            i++;
                         }
                         else {
                             honeyCombs[i] = new HoneyComb(CombColor.getColor(WorldUtils.world.getType(new Location(WorldUtils.world,x + 2,y,z))), CombType.HOLE, x-4, y, z-4);
-                            i++;
                         }
+                        i++;
                     }
                 }
             }
