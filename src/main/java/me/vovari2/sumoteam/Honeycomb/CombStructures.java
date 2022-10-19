@@ -1,6 +1,7 @@
 package me.vovari2.sumoteam.Honeycomb;
 
 import me.vovari2.sumoteam.Utils.STStructure;
+import me.vovari2.sumoteam.Utils.StructureUtils;
 import me.vovari2.sumoteam.Utils.WorldUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -73,5 +74,12 @@ public class CombStructures {
 
     public static boolean isFillRight(int x, int y, int z, ArrayList<Material> materials){
         return materials.contains(WorldUtils.world.getType(new Location(WorldUtils.world, x + 3, y, z))) && materials.contains(WorldUtils.world.getType(new Location(WorldUtils.world, x - 3, y, z))) && materials.contains(WorldUtils.world.getType(new Location(WorldUtils.world, x, y, z + 3))) && materials.contains(WorldUtils.world.getType(new Location(WorldUtils.world, x, y, z - 3)));
+    }
+    public static STStructure getIceStructure(HoneyComb honeyComb){
+        if (honeyComb.type.equals(CombType.TRAMPOLINE)) {
+            if (honeyComb.isGlass)
+                return StructureUtils.structures.get(CombType.TRAMPOLINE).get(CombColor.ICE).getStructures()[0];
+            else return StructureUtils.structures.get(CombType.TRAMPOLINE).get(CombColor.ICE).getStructures()[1];
+        } else return StructureUtils.structures.get(honeyComb.type).get(CombColor.ICE).getRandomVariation(new Random());
     }
 }

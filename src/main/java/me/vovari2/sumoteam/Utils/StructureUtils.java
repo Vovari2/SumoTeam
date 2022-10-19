@@ -45,6 +45,10 @@ public class StructureUtils {
                 }
             }
         }
+        honeyCombs[23].teamSpawn = true;
+        honeyCombs[28].teamSpawn = true;
+        honeyCombs[53].teamSpawn = true;
+        honeyCombs[58].teamSpawn = true;
 
         // Пробное заполнение полей для проверки
         Random R = new Random();

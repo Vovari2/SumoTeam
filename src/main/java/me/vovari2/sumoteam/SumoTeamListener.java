@@ -26,8 +26,6 @@ public class SumoTeamListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
-        SumoTeam.teams.get(STName.UNSET).team.addEntity(event.getPlayer());
-        SumoTeam.teams.get(STName.UNSET).team.removeEntity(event.getPlayer());
         PlayerUtils.remove(event.getPlayer());
     }
 
@@ -69,14 +67,15 @@ public class SumoTeamListener implements Listener {
                 double X = player.getLocation().getX(), Y = player.getLocation().getY(), Z = player.getLocation().getZ();
                 if (Y <= 126 && Y >= 120 && X >= -6816.7 && Z <= 1305.7 && X <= -6680.3 && Z >= 1147.3){
                     // Показ сообщение другим игрокам, о том что игрок упал
-                    for (Player selectPlayer : PlayerUtils.players.values()) {
-                            if (!PlayerUtils.playerHits.containsKey(player.getName()))
-                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" упал", ComponentUtils.White))));
-                            else if (PlayerUtils.players.containsKey(PlayerUtils.playerHits.get(name)))
-                                selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(PlayerUtils.playerHits.get(name), STTeam.getColorTeam(PlayerUtils.players.get(PlayerUtils.playerHits.get(name)).getName())))));
-                            if (selectPlayer.getName().equals(PlayerUtils.playerHits.get(name)))
-                                selectPlayer.playSound(selectPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
-                        }
+                    for (STPlayer selectSTPlayer : PlayerUtils.players.values()) {
+                        Player selectPlayer = selectSTPlayer.player;
+                        if (!PlayerUtils.playerHits.containsKey(player.getName()))
+                            selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" упал", ComponentUtils.White))));
+                        else if (PlayerUtils.players.containsKey(PlayerUtils.playerHits.get(name)))
+                            selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getColorTeam(player.getName())).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(PlayerUtils.playerHits.get(name), STTeam.getColorTeam(PlayerUtils.players.get(PlayerUtils.playerHits.get(name)).player.getName())))));
+                        if (selectPlayer.getName().equals(PlayerUtils.playerHits.get(name)))
+                            selectPlayer.playSound(selectPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
+                    }
                     SumoTeam.teams.get(STName.getName(ScoreboardUtils.scoreboard.getEntityTeam(player).getName().substring(8).toLowerCase())).fallPlayers.add(Bukkit.getPlayer(player.getName()));
 
                     SumoTeamCommands.LeaveTeam(player);

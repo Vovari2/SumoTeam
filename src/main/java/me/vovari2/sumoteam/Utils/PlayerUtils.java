@@ -1,12 +1,13 @@
 package me.vovari2.sumoteam.Utils;
 
+import me.vovari2.sumoteam.SumoTeam;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 
 public class PlayerUtils {
-    public static HashMap<String, Player> players;
+    public static HashMap<String, STPlayer> players;
     public static HashMap<String, String> playerHits;
 
     public static void Initialization() {
@@ -23,13 +24,15 @@ public class PlayerUtils {
 
     public static void add(Player player) {
         if (WorldUtils.inMap(player.getLocation()) && !players.containsKey(player.getName())){
-            players.put(player.getName(), player);
+            players.put(player.getName(),new STPlayer(player));
             player.setScoreboard(ScoreboardUtils.scoreboard);
         }
     }
 
     public static void remove(Player player) {
         if (players.containsKey(player.getName()) && !WorldUtils.inMap(player.getLocation())){
+            SumoTeam.teams.get(STName.UNSET).team.addEntity(player);
+            SumoTeam.teams.get(STName.UNSET).team.removeEntity(player);
             players.remove(player.getName());
             player.setScoreboard(ScoreboardUtils.empty);
         }

@@ -17,7 +17,7 @@ public class TextUtils {
     public static Component getGameText(String text){
         return Component.text("[", ComponentUtils.Gold, TextDecoration.BOLD).append(Component.text("⚔").decoration(TextDecoration.BOLD, false)).append(Component.text("] ", ComponentUtils.Gold, TextDecoration.BOLD)).append(Component.text(text, ComponentUtils.White).decoration(TextDecoration.BOLD, false));}
     public static Component getGameText(Component text){
-        return Component.text("[", ComponentUtils.Gold, TextDecoration.BOLD).append(Component.text("⚔").decoration(TextDecoration.BOLD, false)).append(Component.text("] ", ComponentUtils.Gold, TextDecoration.BOLD)).color(ComponentUtils.White).append(text.decoration(TextDecoration.BOLD, false));}
+        return Component.text("[", ComponentUtils.Gold, TextDecoration.BOLD).append(Component.text("⚔", ComponentUtils.Gold).decoration(TextDecoration.BOLD, false)).append(Component.text("] ", ComponentUtils.Gold, TextDecoration.BOLD)).append(text.decoration(TextDecoration.BOLD, false));}
 
     public static void errorCommandIncorrectly(Player player){
         player.sendMessage(getErrorText("Команда введена неверно! /sumoteam"));
