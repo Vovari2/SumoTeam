@@ -54,7 +54,7 @@ public class SumoTeamListener implements Listener {
             Location location = player.getLocation();
             if (location.clone().subtract(0.0D, 0.2D, 0.0D).getBlock().getType().equals(Material.EMERALD_BLOCK) && location.getBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE)) {
                 Vector direction = location.getDirection();
-                WorldUtils.world.playSound(location,Sound.BLOCK_AMETHYST_BLOCK_PLACE, 0.25F, 1);
+                WorldUtils.world.playSound(location,Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.25F, 1);
                 player.setVelocity(new Vector(direction.getX() * 0.4D * scaleForward,0.85D * scaleUp,direction.getZ() * 0.4D * scaleForward));
             }
         }
@@ -73,7 +73,6 @@ public class SumoTeamListener implements Listener {
                 SumoTeam.teams.get(STName.DEFAULT).team.removeEntity(player);
             }
 
-            // Область под картой, для удаления игрока с поля, если упал
             if (PlayerUtils.players.get(name).inField){
                 if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL)){
                     if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.RED) && WorldUtils.isOnCenter(WorldUtils.pointRedZone, player.getLocation(), 6))

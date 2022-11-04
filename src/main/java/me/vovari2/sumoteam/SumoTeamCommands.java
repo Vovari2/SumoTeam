@@ -408,6 +408,7 @@ public class SumoTeamCommands implements CommandExecutor{
     public static void StopTeam(STTeam team) {
         team.fallPlayers = new ArrayList<>();
         team.points = 0;
+        team.pointsF = 0;
         for (String playerName : team.team.getEntries())
             LeaveTeam(Bukkit.getServer().getPlayer(playerName));
     }

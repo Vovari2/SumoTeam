@@ -49,7 +49,7 @@ public class SumoTeamTicks extends BukkitRunnable {
                 if ((int) team.pointsF > team.points)   {
                     team.points = (int) team.pointsF;
                     ScoreboardUtils.ReloadScores();
-                    if (team.points > 300)
+                    if (team.points >= 100)
                         team.WinTeam();
                 }
             }

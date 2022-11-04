@@ -19,7 +19,7 @@ public class VectorUtils {
     }
     public static Vector getVector(Location A, Location B){
         if (A.getY() - B.getY() == 0)
-            return new Vector((A.getX() - B.getX()) * 0.25, 0.9, (A.getZ() - B.getZ()) * 0.25);
-        else return new Vector((A.getX() - B.getX()) * 0.25, (A.getY() - B.getY()) * 0.9, (A.getZ() - B.getZ()) * 0.25);
+            return new Vector((A.getX() - B.getX()) * 0.15, 0.9, (A.getZ() - B.getZ()) * 0.15);
+        else return new Vector((A.getX() - B.getX()) * 0.15, (A.getY() - B.getY()) * 0.9, (A.getZ() - B.getZ()) * 0.15);
     }
 }

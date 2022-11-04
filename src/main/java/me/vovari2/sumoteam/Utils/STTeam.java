@@ -65,10 +65,10 @@ public class STTeam {
 
         for (STPlayer stPlayer : PlayerUtils.players.values()){
             Player player = stPlayer.player;
-            player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂");
-            player.sendMessage("\n\n        Команда " + word + ChatColor.WHITE + " победила!");
-            player.sendMessage("  " + SumoTeamCommands.ListTeam(this));
-            player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂\n\n");
+            player.sendMessage(ComponentUtils.lineStyle);
+            player.sendMessage("\n      Команда " + word + ChatColor.WHITE + " победила!");
+            player.sendMessage("      " + SumoTeamCommands.ListTeam(this) + "\n ");
+            player.sendMessage(ComponentUtils.lineStyle);
         }
 
         for (Location pointFirework : WorldUtils.fireworkPosition){

@@ -24,16 +24,16 @@ public final class SumoTeam extends JavaPlugin {
     public static SumoTeamSeconds taskSeconds;
 
     public static boolean inLobby = true;
-    public static int timer;
     public static STGameMode gameMode = STGameMode.CLASSIC;
+    public static int maxPoint = 100;
     public static STFieldMode fieldMode = STFieldMode.CLASSIC;
     public static int fillProcent = 100;
     public static int countIce = 89;
 
     public static HashMap<STName, STTeam> teams;
 
-    public static boolean gameOver = false;
     public static STName winTeam;
+    public static boolean gameOver;
 
     @Override
     public void onEnable() {
