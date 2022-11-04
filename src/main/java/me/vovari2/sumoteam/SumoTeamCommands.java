@@ -1,5 +1,7 @@
 package me.vovari2.sumoteam;
 
+import me.vovari2.sumoteam.Honeycomb.BreakType;
+import me.vovari2.sumoteam.Honeycomb.HoneyComb;
 import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.Modes.STGameMode;
 import me.vovari2.sumoteam.Utils.*;
@@ -20,78 +22,67 @@ public class SumoTeamCommands implements CommandExecutor{
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args){
-        if (sender instanceof Player){
-            Player player = (Player) sender;
+        if (sender instanceof Player player){
             if (player.hasPermission("sumoteam.*")){
                 if (args.length == 0)
                     SumoTeam.HelpMessage(player);
                 else {
-                    switch (args[0]){
-                        case "trampoline": {
+                    switch (args[0]) {
+                        case "trampoline" -> {
                             if (args.length > 3)
                                 TextUtils.errorTooManyArguments(player);
                             else if (args.length == 2)
                                 TextUtils.errorCommandIncorrectly(player);
                             else {
                                 if (args.length == 1) {
-                                    if (SumoTeamListener.switchTrampoline){
+                                    if (SumoTeamListener.switchTrampoline) {
                                         SumoTeamListener.switchTrampoline = false;
                                         player.sendMessage(TextUtils.getEditText(ChatColor.RED + "Батуты выключены!"));
-                                    }
-                                    else {
+                                    } else {
                                         SumoTeamListener.switchTrampoline = true;
                                         player.sendMessage(TextUtils.getEditText(ChatColor.GREEN + "Батуты включены!"));
                                     }
-                                }
-                                else {
+                                } else {
                                     if (args[1].equalsIgnoreCase("forward")) {
                                         if (SumoTeam.CheckStringOnDouble(args[2])) {
                                             plugin.getConfig().set("ScaleForward", Double.parseDouble(args[2]));
                                             plugin.saveConfig();
                                             SumoTeamListener.scaleForward = SumoTeam.plugin.getConfig().getDouble("ScaleForward");
                                             player.sendMessage(TextUtils.getEditText("Коэффициент батута " + ChatColor.GREEN + "Вперёд" + ChatColor.WHITE + " был изменён на " + ChatColor.GREEN + args[2]));
-                                        }
-                                        else TextUtils.errorCommandIncorrectly(player);
-                                    }
-                                    else if (args[1].equalsIgnoreCase("up")){
+                                        } else TextUtils.errorCommandIncorrectly(player);
+                                    } else if (args[1].equalsIgnoreCase("up")) {
                                         if (SumoTeam.CheckStringOnDouble(args[2])) {
                                             plugin.getConfig().set("ScaleUp", Double.parseDouble(args[2]));
                                             plugin.saveConfig();
                                             SumoTeamListener.scaleUp = SumoTeam.plugin.getConfig().getDouble("ScaleUp");
                                             player.sendMessage(TextUtils.getEditText("Коэффициент батута " + ChatColor.GREEN + "Вверх" + ChatColor.WHITE + " был изменён на " + ChatColor.GREEN + args[2]));
-                                        }
-                                        else TextUtils.errorCommandIncorrectly(player);
-                                    }
-                                    else TextUtils.errorCommandIncorrectly(player);
+                                        } else TextUtils.errorCommandIncorrectly(player);
+                                    } else TextUtils.errorCommandIncorrectly(player);
                                 }
                             }
-                        } break;
-                        case "join": {
+                        }
+                        case "join" -> {
                             if (SumoTeam.inLobby) {
-                                if (args.length > 3){
+                                if (args.length > 3) {
                                     TextUtils.errorTooManyArguments(player);
-                                }
-                                else if (args.length == 2){
+                                } else if (args.length == 2) {
                                     if (STName.isSTName(args[1]))
                                         AddingTeams(SumoTeam.teams.get(STName.getName(args[1])), player, player);
                                     else TextUtils.errorTeamIncorrectly(player);
-                                }
-                                else if (args.length == 3){
-                                    if (!args[2].equals("*")){
+                                } else if (args.length == 3) {
+                                    if (!args[2].equals("*")) {
                                         HashMap<String, Player> Players = SumoTeam.HashMapPlayers();
-                                        if (Players.containsKey(args[2])){
+                                        if (Players.containsKey(args[2])) {
                                             if (STName.isSTName(args[1]))
                                                 AddingTeams(SumoTeam.teams.get(STName.getName(args[1])), Players.get(args[2]), player);
                                             else TextUtils.errorTeamIncorrectly(player);
-                                        }
-                                        else TextUtils.errorPlayerIncorrectly(player);
-                                    }
-                                    else {
+                                        } else TextUtils.errorPlayerIncorrectly(player);
+                                    } else {
                                         String team = args[1].toLowerCase();
                                         if (!STName.isSTName(team))
                                             TextUtils.errorTeamIncorrectly(player);
                                         else {
-                                            for (STPlayer selectSTPlayer : PlayerUtils.players.values()){
+                                            for (STPlayer selectSTPlayer : PlayerUtils.players.values()) {
                                                 Player selectPlayer = selectSTPlayer.player;
                                                 if (team.equals("-"))
                                                     LeaveTeam(selectPlayer);
@@ -99,30 +90,29 @@ public class SumoTeamCommands implements CommandExecutor{
                                             }
                                             if (team.equals("-"))
                                                 player.sendMessage(TextUtils.getReadyText("Все игроки были удалены из своих команд!"));
-                                            else player.sendMessage(TextUtils.getReadyText("Все игроки были добавлены в команду " + SumoTeam.teams.get(STName.getName(team)).word + ChatColor.WHITE + "!"));
+                                            else
+                                                player.sendMessage(TextUtils.getReadyText("Все игроки были добавлены в команду " + SumoTeam.teams.get(STName.getName(team)).word + ChatColor.WHITE + "!"));
                                         }
                                     }
-                                }
-                                else TextUtils.errorCommandIncorrectly(player);
+                                } else TextUtils.errorCommandIncorrectly(player);
                             } else TextUtils.warningEventGoingOn(player);
-                        } break;
-                        case "list": {
-                            if (args.length == 1){
+                        }
+                        case "list" -> {
+                            if (args.length == 1) {
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.RED))));
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.BLUE))));
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.GREEN))));
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.YELLOW))));
                                 player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.DEFAULT))));
-                            } else if (args.length == 2){
-                                if (!args[1].equals("*")){
+                            } else if (args.length == 2) {
+                                if (!args[1].equals("*")) {
                                     if (STName.isSTName(args[1]))
                                         player.sendMessage(TextUtils.getReadyText(ListTeam(SumoTeam.teams.get(STName.getName(args[1])))));
                                     else TextUtils.errorTeamIncorrectly(player);
-                                }
-                                else {
+                                } else {
                                     if (PlayerUtils.players.size() > 0) {
                                         StringBuilder messageList = new StringBuilder("Игроки на ивенте:" + " (" + ChatColor.GRAY + PlayerUtils.players.size() + ChatColor.WHITE + "): ");
-                                        for (STPlayer selectPlayer : PlayerUtils.players.values()){
+                                        for (STPlayer selectPlayer : PlayerUtils.players.values()) {
                                             if (selectPlayer.inField)
                                                 messageList.append(ChatColor.GREEN).append("\n       ● ");
                                             else messageList.append(ChatColor.RED).append("\n       ● ");
@@ -133,10 +123,10 @@ public class SumoTeamCommands implements CommandExecutor{
                                 }
 
                             } else TextUtils.errorTooManyArguments(player);
-                        } break;
-                        case "division": {
-                            if (SumoTeam.inLobby){
-                                if (args.length == 1){
+                        }
+                        case "division" -> {
+                            if (SumoTeam.inLobby) {
+                                if (args.length == 1) {
                                     int countPlayersTeam = SumoTeam.teams.get(STName.DEFAULT).team.getSize() / 4;
                                     int countDivision = countPlayersTeam * 4, countNotDivision = SumoTeam.teams.get(STName.DEFAULT).team.getSize() - countDivision;
                                     DivisionTeam(SumoTeam.teams.get(STName.RED), countPlayersTeam);
@@ -144,7 +134,7 @@ public class SumoTeamCommands implements CommandExecutor{
                                     DivisionTeam(SumoTeam.teams.get(STName.GREEN), countPlayersTeam);
                                     DivisionTeam(SumoTeam.teams.get(STName.YELLOW), countPlayersTeam);
                                     String message = "";
-                                    if (countDivision > 0){
+                                    if (countDivision > 0) {
                                         message = " Распределено: " + ChatColor.GREEN + countDivision + " ";
                                         if (countNotDivision > 0)
                                             message += "/ ";
@@ -153,14 +143,13 @@ public class SumoTeamCommands implements CommandExecutor{
                                         message += ChatColor.WHITE + "Не распределено: " + ChatColor.RED + countNotDivision;
                                     if (countDivision > 0)
                                         player.sendMessage(TextUtils.getReadyText(message));
-                                    else if (countNotDivision > 0){
+                                    else if (countNotDivision > 0) {
                                         player.sendMessage(TextUtils.getWarningText(message));
-                                    }
-                                    else player.sendMessage(TextUtils.getWarningText("В команде " + ChatColor.GRAY + "По умолчанию" + ChatColor.WHITE + " нет игроков!"));
-                                }
-                                else if (args.length == 2){
-                                    switch (args[1].toLowerCase()){
-                                        case "save": {
+                                    } else
+                                        player.sendMessage(TextUtils.getWarningText("В команде " + ChatColor.GRAY + "По умолчанию" + ChatColor.WHITE + " нет игроков!"));
+                                } else if (args.length == 2) {
+                                    switch (args[1].toLowerCase()) {
+                                        case "save" -> {
                                             SumoTeamConfigTeams.reload();
                                             SumoTeamConfigTeams.get().set("TeamRedPlayers", SumoTeam.teams.get(STName.RED).getListPlayers());
                                             SumoTeamConfigTeams.get().set("TeamBluePlayers", SumoTeam.teams.get(STName.BLUE).getListPlayers());
@@ -168,16 +157,16 @@ public class SumoTeamCommands implements CommandExecutor{
                                             SumoTeamConfigTeams.get().set("TeamYellowPlayers", SumoTeam.teams.get(STName.YELLOW).getListPlayers());
                                             SumoTeamConfigTeams.save();
                                             player.sendMessage(TextUtils.getReadyText("Состав игроков в командах был сохранён!"));
-                                        } break;
-                                        case "load": {
+                                        }
+                                        case "load" -> {
                                             SumoTeamConfigTeams.reload();
                                             DivisionTeamLoad(SumoTeam.teams.get(STName.RED), "Red");
                                             DivisionTeamLoad(SumoTeam.teams.get(STName.BLUE), "Blue");
                                             DivisionTeamLoad(SumoTeam.teams.get(STName.GREEN), "Green");
                                             DivisionTeamLoad(SumoTeam.teams.get(STName.YELLOW), "Yellow");
                                             player.sendMessage(TextUtils.getReadyText("Команды были заполнены предыдущим составом игроков!"));
-                                        } break;
-                                        case "max": {
+                                        }
+                                        case "max" -> {
                                             int countPlayersTeam = SumoTeam.teams.get(STName.DEFAULT).team.getSize() / 4;
                                             DivisionTeam(SumoTeam.teams.get(STName.RED), countPlayersTeam);
                                             DivisionTeam(SumoTeam.teams.get(STName.BLUE), countPlayersTeam);
@@ -187,46 +176,44 @@ public class SumoTeamCommands implements CommandExecutor{
                                             String[] arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
                                             int countDefault = arrayDefault.length;
                                             Player selectPlayer;
-                                            if (countDefault > 2){
-                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault-1)]);
+                                            if (countDefault > 2) {
+                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault - 1)]);
                                                 JoinTeam(SumoTeam.teams.get(STName.GREEN), selectPlayer);
                                             }
                                             arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
-                                            if (countDefault > 1){
-                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault-1)]);
+                                            if (countDefault > 1) {
+                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault - 1)]);
                                                 JoinTeam(SumoTeam.teams.get(STName.BLUE), selectPlayer);
                                             }
                                             arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
-                                            if (countDefault > 0){
+                                            if (countDefault > 0) {
                                                 selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[0]);
                                                 JoinTeam(SumoTeam.teams.get(STName.RED), selectPlayer);
                                             }
 
                                             player.sendMessage(TextUtils.getReadyText("Распределено: " + ChatColor.GREEN + (countDefault + countPlayersTeam * 4)));
-                                        } break;
-                                        default: TextUtils.errorCommandIncorrectly(player);
+                                        }
+                                        default -> TextUtils.errorCommandIncorrectly(player);
                                     }
-                                }
-                                else TextUtils.errorCommandIncorrectly(player);
-                            }
-                            else TextUtils.warningEventGoingOn(player);
-                        } break;
-                        case "return": {
-                            if(SumoTeam.inLobby) {
+                                } else TextUtils.errorCommandIncorrectly(player);
+                            } else TextUtils.warningEventGoingOn(player);
+                        }
+                        case "return" -> {
+                            if (SumoTeam.inLobby) {
                                 ReturnTeam(SumoTeam.teams.get(STName.RED));
                                 ReturnTeam(SumoTeam.teams.get(STName.BLUE));
                                 ReturnTeam(SumoTeam.teams.get(STName.GREEN));
                                 ReturnTeam(SumoTeam.teams.get(STName.YELLOW));
                                 player.sendMessage(TextUtils.getReadyText("Игроки были возвращены в команду " + ChatColor.GRAY + "По умолчанию"));
-                            }
-                            else TextUtils.warningEventGoingOn(player);
-                        } break;
-                        case "help": SumoTeam.HelpMessage(player); break;
-                        case "start": {
+                            } else TextUtils.warningEventGoingOn(player);
+                        }
+                        case "help" -> SumoTeam.HelpMessage(player);
+                        case "start" -> {
                             if (SumoTeam.inLobby) {
+                                SumoTeam.timer = 10;
                                 SumoTeam.inLobby = false;
 
-                                SumoTeamTask.Tick = 390;
+                                SumoTeamSeconds.Seconds = 19;
 
                                 StartTeam(SumoTeam.teams.get(STName.RED));
                                 StartTeam(SumoTeam.teams.get(STName.BLUE));
@@ -235,92 +222,110 @@ public class SumoTeamCommands implements CommandExecutor{
 
                                 player.sendMessage(TextUtils.getReadyText(ChatColor.GREEN + "Ивент начинается!"));
 
+                                ScoreboardUtils.scores = ScoreboardUtils.CreateScores();
                                 ScoreboardUtils.LoadScores();
-                                if (SumoTeam.countIce == 89)
-                                    SumoTeamTask.ReplaceComb(new Random());
+
+                                if (SumoTeam.fieldMode.equals(STFieldMode.ICE_PLATFORM) && SumoTeam.countIce > 0){
+                                    StructureUtils.honeyCombs[23].typeBreak = BreakType.SPAWN;
+                                    StructureUtils.honeyCombs[28].typeBreak = BreakType.SPAWN;
+                                    StructureUtils.honeyCombs[53].typeBreak = BreakType.SPAWN;
+                                    StructureUtils.honeyCombs[58].typeBreak = BreakType.SPAWN;
+                                    if (SumoTeam.countIce == 89)
+                                        StructureUtils.ReplaceComb(new Random());
+                                }
+                                if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL))
+                                    StructureUtils.honeyCombs[85].typeBreak = BreakType.CENTER;
                             } else player.sendMessage(TextUtils.getWarningText("Ивент уже идёт!"));
-                        } break;
-                        case "stop": {
-                            if (!SumoTeam.inLobby){
+                        }
+                        case "stop" -> {
+                            if (!SumoTeam.inLobby) {
                                 PlayerUtils.playerHits = new HashMap<>();
 
                                 SumoTeam.inLobby = true;
+                                SumoTeam.gameOver = false;
                                 ScoreboardUtils.ResetScores();
 
-                                SumoTeamTask.RemoveIce(new Random());
+                                StructureUtils.RemoveIce(new Random());
 
                                 StopTeam(SumoTeam.teams.get(STName.RED));
                                 StopTeam(SumoTeam.teams.get(STName.BLUE));
                                 StopTeam(SumoTeam.teams.get(STName.GREEN));
                                 StopTeam(SumoTeam.teams.get(STName.YELLOW));
 
-                                WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location (WorldUtils.world, -6741, 157, 1218), Material.AIR, Material.BARRIER);
+                                WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location(WorldUtils.world, -6741, 157, 1218), Material.AIR, Material.BARRIER);
+
+                                for (HoneyComb comb : StructureUtils.honeyCombs)
+                                    if (!comb.typeBreak.equals(BreakType.NONE))
+                                        comb.typeBreak = BreakType.NONE;
 
                                 player.sendMessage(TextUtils.getReadyText(ChatColor.RED + "Ивент остановлен!"));
-                            } else player.sendMessage(TextUtils.getWarningText(ChatColor.GRAY + "Ивент ещё не начался!"));
-                        } break;
-                        case "gamemode": {
+                            } else
+                                player.sendMessage(TextUtils.getWarningText(ChatColor.GRAY + "Ивент ещё не начался!"));
+                        }
+                        case "gamemode" -> {
                             if (args.length > 2)
                                 TextUtils.errorTooManyArguments(player);
                             else if (args.length == 1)
                                 player.sendMessage(TextUtils.getReadyText("Режим игры: " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
                             else {
-                                if (SumoTeam.inLobby){
-                                    switch(args[1].toLowerCase()){
-                                        case "classic":{
+                                if (SumoTeam.inLobby) {
+                                    switch (args[1].toLowerCase()) {
+                                        case "classic" -> {
                                             SumoTeam.gameMode = STGameMode.CLASSIC;
                                             player.sendMessage(TextUtils.getEditText("Режим игры изменён на " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
-                                        } break;
-                                        case "king_of_the_hill":{
+                                        }
+                                        case "king_of_the_hill" -> {
                                             SumoTeam.gameMode = STGameMode.KING_OF_THE_HILL;
                                             player.sendMessage(TextUtils.getEditText("Режим игры изменён на " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
-                                        } break;
-                                        default: TextUtils.errorCommandIncorrectly(player);
+                                        }
+                                        default -> TextUtils.errorCommandIncorrectly(player);
                                     }
                                 } else TextUtils.warningEventGoingOn(player);
                             }
-                        } break;
-                        case "fieldmode": {
+                        }
+                        case "fieldmode" -> {
                             if (args.length > 3)
                                 TextUtils.errorTooManyArguments(player);
-                            else if (args.length == 1){
+                            else if (args.length == 1) {
                                 String message = "Режим поля: " + SumoTeam.fieldMode.getChatColor() + SumoTeam.fieldMode.name();
                                 if (SumoTeam.fieldMode.equals(STFieldMode.ICE_PLATFORM))
                                     message += " " + SumoTeam.fillProcent + "%";
                                 player.sendMessage(TextUtils.getReadyText(message));
-                            }
-                            else {
-                                if (SumoTeam.inLobby){
-                                    switch(args[1].toLowerCase()){
-                                        case "classic":{
+                            } else {
+                                if (SumoTeam.inLobby) {
+                                    switch (args[1].toLowerCase()) {
+                                        case "classic" -> {
                                             SumoTeam.fieldMode = STFieldMode.CLASSIC;
                                             player.sendMessage(TextUtils.getEditText("Режим поля изменён на " + SumoTeam.fieldMode.getChatColor() + SumoTeam.fieldMode.name()));
-                                        } break;
-                                        case "ice_platform":{
+                                        }
+                                        case "ice_platform" -> {
                                             SumoTeam.fieldMode = STFieldMode.ICE_PLATFORM;
                                             player.sendMessage(TextUtils.getEditText("Режим поля изменён на " + SumoTeam.fieldMode.getChatColor() + SumoTeam.fieldMode.name()));
-                                            if (args.length == 3){
-                                                try{
+                                            if (args.length == 3) {
+                                                try {
                                                     SumoTeam.fillProcent = Integer.parseInt(args[2]);
-                                                } catch (Exception error) { TextUtils.errorCommandIncorrectly(player); break;}
+                                                } catch (Exception error) {
+                                                    TextUtils.errorCommandIncorrectly(player);
+                                                    break;
+                                                }
                                                 SumoTeam.countIce = (int) (89 * (SumoTeam.fillProcent / 100D));
                                                 player.sendMessage(TextUtils.getEditText("Процент заполнения поля льдом изменён на " + ChatColor.AQUA + SumoTeam.fillProcent + "%"));
                                             }
-                                        } break;
-                                        default: TextUtils.errorCommandIncorrectly(player);
+                                        }
+                                        default -> TextUtils.errorCommandIncorrectly(player);
                                     }
                                 } else TextUtils.warningEventGoingOn(player);
                             }
-                        } break;
-                        case "reload":{
+                        }
+                        case "reload" -> {
                             if (args.length > 1)
                                 TextUtils.errorTooManyArguments(player);
                             else {
                                 plugin.onDisable();
                                 plugin.onEnable();
                             }
-                        } break;
-                        default: TextUtils.errorCommandIncorrectly(player);
+                        }
+                        default -> TextUtils.errorCommandIncorrectly(player);
                     }
                 }
             }
@@ -335,10 +340,11 @@ public class SumoTeamCommands implements CommandExecutor{
     }
 
     public static void LeaveTeam(Player selectPlayer) {
-        selectPlayer.teleport(SumoTeam.teams.get(STName.UNSET).room);
         SumoTeam.teams.get(STName.UNSET).team.addEntity(selectPlayer);
         SumoTeam.teams.get(STName.UNSET).team.removeEntity(selectPlayer);
         PlayerUtils.players.get(selectPlayer.getName()).inField = false;
+        selectPlayer.getInventory().clear();
+        selectPlayer.teleport(SumoTeam.teams.get(STName.UNSET).room);
     }
 
     private void AddingTeams(STTeam team, Player selectPlayer, Player player){
@@ -399,12 +405,10 @@ public class SumoTeamCommands implements CommandExecutor{
         }
     }
 
-    private void StopTeam(STTeam team) {
+    public static void StopTeam(STTeam team) {
         team.fallPlayers = new ArrayList<>();
-        for (String playerName : team.team.getEntries()){
-            Player selectPlayer = Bukkit.getServer().getPlayer(playerName);
-            LeaveTeam(selectPlayer);
-            selectPlayer.getInventory().clear();
-        }
+        team.points = 0;
+        for (String playerName : team.team.getEntries())
+            LeaveTeam(Bukkit.getServer().getPlayer(playerName));
     }
 }

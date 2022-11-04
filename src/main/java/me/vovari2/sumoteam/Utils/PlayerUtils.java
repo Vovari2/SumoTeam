@@ -30,7 +30,7 @@ public class PlayerUtils {
     }
 
     public static void remove(Player player) {
-        if (players.containsKey(player.getName()) && !WorldUtils.inMap(player.getLocation())){
+        if (players.containsKey(player.getName())){
             SumoTeam.teams.get(STName.UNSET).team.addEntity(player);
             SumoTeam.teams.get(STName.UNSET).team.removeEntity(player);
             players.remove(player.getName());

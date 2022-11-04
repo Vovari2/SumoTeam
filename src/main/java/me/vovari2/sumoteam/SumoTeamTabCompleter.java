@@ -13,8 +13,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
 
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player) sender;
+        if (sender instanceof Player player) {
             if (player.hasPermission("sumoteam.*")){
                 if (args.length == 1) {
                     List<String> commands = new ArrayList<>();

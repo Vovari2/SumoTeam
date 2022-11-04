@@ -1,32 +1,28 @@
 package me.vovari2.sumoteam.Honeycomb;
 
-import me.vovari2.sumoteam.Utils.STFlip;
 import me.vovari2.sumoteam.Utils.WorldUtils;
 import org.bukkit.Location;
+
+import java.util.Random;
 
 
 public class HoneyComb implements Cloneable{
 
     public boolean isIce = false;
     public boolean isGlass = false;
+    public byte variant;
 
     public CombColor color;
     public CombType type = CombType.FULL;
+    public BreakType typeBreak = BreakType.NONE;
 
     public int X;
     public int Y;
     public int Z;
     public void Location(int X, int Y, int Z) { this.X = X; this.Y = Y; this.Z = Z; }
 
-    public STFlip[] flips = new STFlip[]{};
-
-
-    public boolean stageAfterBreak = false;
-    public boolean stageBeforeBreak = false;
-    public boolean havePlayer = false;
-    public boolean teamSpawn = false;
-
     public boolean timePlus = false;
+    public boolean havePlayer = false;
     public int time = 0;
 
 
@@ -35,6 +31,8 @@ public class HoneyComb implements Cloneable{
             isGlass = true;
         this.color = color;
         this.Location(X,Y,Z);
+        Random R = new Random();
+        this.variant = (byte) R.nextInt(4);
     }
 
     public HoneyComb(CombColor color, CombType type, int X, int Y, int Z){
@@ -43,6 +41,8 @@ public class HoneyComb implements Cloneable{
         this.color = color;
         this.Location(X,Y,Z);
         this.type = type;
+        Random R = new Random();
+        this.variant = (byte) R.nextInt(4);
     }
 
     public Location getCenterLocation(){

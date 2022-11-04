@@ -1,5 +1,7 @@
 package me.vovari2.sumoteam.Utils;
 
+import me.vovari2.sumoteam.Honeycomb.BreakType;
+import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.SumoTeam;
 import me.vovari2.sumoteam.SumoTeamCommands;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,11 +15,14 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Random;
 
 public class STTeam {
     public STName name;
     public Team team;
+    public float pointsF;
+    public int points;
+    public int countCenter;
     public Location room;
     public Location field;
     public String word;
@@ -26,7 +31,6 @@ public class STTeam {
     public int colorG;
     public int colorB;
     public ArrayList<Player> fallPlayers;
-    public TextColor getTextColor() { return TextColor.color(colorR, colorG, colorB); }
     public STTeam(STName teamName, String wordGS, ChatColor CColor, int R, int G, int B, Team ITeam) {
         name = teamName;
         word = CColor + wordGS;
@@ -40,13 +44,18 @@ public class STTeam {
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         fallPlayers = new ArrayList<>();
     }
+    public Color getColor(){
+        return Color.fromRGB(colorR, colorG, colorB);
+    }
+    public TextColor getTextColor(){
+        return TextColor.color(colorR, colorG, colorB);
+    }
     public ArrayList<String> getListPlayers(){
         return new ArrayList<>(team.getEntries());
     }
     public void WinTeam(){
-        List<String> namePlayers = SumoTeam.ListNamePlayers();
         for (Player player : fallPlayers)
-            if(namePlayers.contains(player.getName()))
+            if(PlayerUtils.players.containsKey(player.getName()))
                 team.addEntity(player);
 
         for (String playerName : team.getEntries()){
@@ -54,13 +63,12 @@ public class STTeam {
             SumoTeam.plugin.getServer().getPlayer(playerName).teleport(SumoTeam.teams.get(STName.DEFAULT).field);
         }
 
-        for (Player player : Bukkit.getOnlinePlayers()){
-            if (WorldUtils.inMap(player.getLocation())){
-                player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂");
-                player.sendMessage("\n\n        Команда " + word + ChatColor.WHITE + " победила!");
-                player.sendMessage("  " + SumoTeamCommands.ListTeam(this));
-                player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂\n\n");
-            }
+        for (STPlayer stPlayer : PlayerUtils.players.values()){
+            Player player = stPlayer.player;
+            player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂");
+            player.sendMessage("\n\n        Команда " + word + ChatColor.WHITE + " победила!");
+            player.sendMessage("  " + SumoTeamCommands.ListTeam(this));
+            player.sendMessage(ChatColor.GRAY + "\n▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂▂\n\n");
         }
 
         for (Location pointFirework : WorldUtils.fireworkPosition){
@@ -71,6 +79,17 @@ public class STTeam {
         }
 
         SumoTeam.winTeam = name;
+        SumoTeam.gameOver = true;
+
+        for (STName teamName : STName.listGameTeam)
+            if (!name.equals(teamName))
+                SumoTeamCommands.StopTeam(SumoTeam.teams.get(teamName));
+
+        if (SumoTeam.fieldMode.equals(STFieldMode.ICE_PLATFORM)){
+            for (int i = 82; i < 89; i++)
+                StructureUtils.honeyCombs[i].typeBreak = BreakType.CENTER;
+            StructureUtils.ReplaceComb(new Random());
+        }
 
         WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location (WorldUtils.world, -6757, 157, 1218), Material.BARRIER, Material.AIR);
         WorldUtils.replace(new Location(WorldUtils.world, -6741, 149, 1234), new Location (WorldUtils.world, -6741, 157, 1218), Material.BARRIER, Material.AIR);
@@ -104,10 +123,10 @@ public class STTeam {
         SumoTeam.teams.get(STName.UNSET).room = new Location(WorldUtils.world, -6748.5, 72, 1226.5,-180,0);
     }
 
-    public static TextColor getColorTeam(String playerName){
+    public static STTeam getPlayerTeam(String playerName){
         for (STTeam team : SumoTeam.teams.values())
             if (team.team.getEntries().contains(playerName))
-                return TextColor.color(team.colorR, team.colorB, team.colorG);
-        return ComponentUtils.White;
+                return team;
+        return SumoTeam.teams.get(STName.UNSET);
     }
 }

@@ -15,13 +15,11 @@ public class STStructure {
             for (int z = 0; z < 9; z++)
                 structure[x][z] = WorldUtils.world.getType(new Location(WorldUtils.world, X+x, Y, Z+z));
     }
-    public void Paste(int X, int Y, int Z, STFlip[] flips){
+    public void Paste(int X, int Y, int Z){
         Material[][] pasteStructure = this.structure;
-        for (STFlip flip : flips)
-            pasteStructure = WorldUtils.flip(pasteStructure, flip);
         for (int x = 0; x < 9; x++)
             for (int z = 0; z < 9; z++)
-                if (!pasteStructure[x][z].equals(emptyBlock))
-                    WorldUtils.world.setType(new Location(WorldUtils.world, X+x, Y, Z+z), pasteStructure[x][z]);
+                if (!pasteStructure[x][z].equals(emptyBlock) && !WorldUtils.world.getType(X+x, Y, Z+z).equals(Material.EMERALD_BLOCK))
+                    WorldUtils.world.setType(X+x, Y, Z+z, pasteStructure[x][z]);
     }
 }

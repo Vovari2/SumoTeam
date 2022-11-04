@@ -20,15 +20,19 @@ import java.util.Set;
 public final class SumoTeam extends JavaPlugin {
 
     public static SumoTeam plugin;
-    public static SumoTeamTask task;
+    public static SumoTeamTicks taskTicks;
+    public static SumoTeamSeconds taskSeconds;
 
     public static boolean inLobby = true;
+    public static int timer;
     public static STGameMode gameMode = STGameMode.CLASSIC;
     public static STFieldMode fieldMode = STFieldMode.CLASSIC;
-    public static int fillProcent = 50;
-    public static int countIce = 46;
+    public static int fillProcent = 100;
+    public static int countIce = 89;
 
     public static HashMap<STName, STTeam> teams;
+
+    public static boolean gameOver = false;
     public static STName winTeam;
 
     @Override
@@ -54,27 +58,38 @@ public final class SumoTeam extends JavaPlugin {
         STTeam.Initialization();
         StructureUtils.Initialization();
         PlayerUtils.Initialization();
+        VectorUtils.Initialization();
 
         // SumoTeam
         getServer().getPluginManager().registerEvents(new SumoTeamListener(), this);
         getCommand("sumoteam").setExecutor(new SumoTeamCommands());
         getCommand("sumoteam").setTabCompleter(new SumoTeamTabCompleter());
 
-        task = new SumoTeamTask();
-        task.runTaskTimer(this, 0L, 1L);
+        taskTicks = new SumoTeamTicks();
+        taskTicks.runTaskTimer(this, 0L, 1L);
+
+        taskSeconds = new SumoTeamSeconds();
+        taskSeconds.runTaskTimer(this, 0L, 20L);
 
         getLogger().info(ChatColor.GREEN + "Enabled for " + (System.currentTimeMillis() - miliseconds) + " ms");
     }
 
     @Override
     public void onDisable() {
+
+        SumoTeamCommands.StopTeam(SumoTeam.teams.get(STName.RED));
+        SumoTeamCommands.StopTeam(SumoTeam.teams.get(STName.BLUE));
+        SumoTeamCommands.StopTeam(SumoTeam.teams.get(STName.GREEN));
+        SumoTeamCommands.StopTeam(SumoTeam.teams.get(STName.YELLOW));
+
         for (STTeam team : teams.values())
             team.team.unregister();
+
         if (ScoreboardUtils.scoreboard.getObjective("SumoTeam") != null)
             ScoreboardUtils.scoreboard.getObjective("SumoTeam").unregister();
 
         WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location (WorldUtils.world, -6741, 157, 1218), Material.AIR, Material.BARRIER);
-        SumoTeamTask.RemoveIce(new Random());
+        StructureUtils.RemoveIce(new Random());
     }
 
     public static void HelpMessage(Player player) {
@@ -84,27 +99,27 @@ public final class SumoTeam extends JavaPlugin {
                 .append(Component.text("Помощь для ", ComponentUtils.Aqua)
                 .append(Component.text("/sumoteam", ComponentUtils.Green))
                 .append(Component.text(" ===", ComponentUtils.Yellow))));
-        player.sendMessage(Component.text("  /st help", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Получение информации по командам ивента", ComponentUtils.White))));
-        player.sendMessage(Component.text("  /st trampoline ", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Включение/выключение батутов в мире", ComponentUtils.White)))
+        player.sendMessage(Component.text("  /st help", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Получение информации по командам ивента", ComponentUtils.White))));
+        player.sendMessage(Component.text("  /st trampoline ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Включение/выключение батутов в мире", ComponentUtils.White)))
                 .append(Component.text("[forward/up]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Изменяемое направление батута:").append(Component.text("\n  - forward (Вперёд)\n  - up (Вверх)", ComponentUtils.Gray)))))
                 .append(Component.text(" "))
                 .append(Component.text("[Коэффициент]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Коэффициент усиления батута ").append(Component.text("(по умолчанию 1.0)", ComponentUtils.Gray))))));
-        player.sendMessage(Component.text("  /st join ", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Добавление игрока в указанную команду", ComponentUtils.White)))
+        player.sendMessage(Component.text("  /st join ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Добавление игрока в указанную команду", ComponentUtils.White)))
                 .append(Component.text("[Команда*]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Команда игроков ").append(Component.text("(обязательный параметр)", ComponentUtils.Gray)))))
                 .append(Component.text(" "))
                 .append(Component.text("[Игрок]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Имя одного игрока или *").append(Component.text("\n(* выбирает всех игроков на ивенте)", ComponentUtils.Gray))))));
-        player.sendMessage(Component.text("  /st list ", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Просмотр списка игроков в командах", ComponentUtils.White)))
+        player.sendMessage(Component.text("  /st list ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Просмотр списка игроков в командах", ComponentUtils.White)))
                 .append(Component.text("[Команда]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Команда игроков или *").append(Component.text("\n(* показывает список игроков на ивенте)", ComponentUtils.Gray))))));
-        player.sendMessage(Component.text("  /st division ", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Распределение игроков поровну", ComponentUtils.White)))
+        player.sendMessage(Component.text("  /st division ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Распределение игроков поровну", ComponentUtils.White)))
                 .append(Component.text("[max/load/save]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительные параметры:").append(Component.text("\n  - max (Распределение всех игроков)\n  - load (Загрузить сохранённый состав команд игроков)\n  - save (Сохранить состав команд игроков)", ComponentUtils.Gray))))));
-        player.sendMessage(Component.text("  /st return", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Возвращение игроков в команду по умолчанию", ComponentUtils.White))));
-        player.sendMessage(Component.text("  /st gamemode ", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Режим проведения ивента", ComponentUtils.White)))
+        player.sendMessage(Component.text("  /st return", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Возвращение игроков в команду по умолчанию", ComponentUtils.White))));
+        player.sendMessage(Component.text("  /st gamemode ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Режим проведения ивента", ComponentUtils.White)))
                 .append(Component.text("[CLASSIC/KING_OF_THE_HILL]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы игры:").append(Component.text("\n  - CLASSIC (Каждая команда должна скинуть всех своих противников)\n  - ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" (Очки добавляются только на центре. Нужно набрать больше, чем у других команд)", ComponentUtils.Gray)))))));
-        player.sendMessage(Component.text("  /st fieldmode ", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Режим изменения поля", ComponentUtils.White)))
+        player.sendMessage(Component.text("  /st fieldmode ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Режим изменения поля", ComponentUtils.White)))
                 .append(Component.text("[CLASSIC/ICE_PLATFORM]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы поля:").append(Component.text("\n  - CLASSIC (Поле не изменяется)\n  - ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" (Каждые несколько секунд, поле заменяет некоторые соты на лёд)", ComponentUtils.Gray))))))
                 .append(Component.text(" [Параметр настройки]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" указывается процент заполения поля льдом", ComponentUtils.Gray)))))));
-        player.sendMessage(Component.text("  /st start", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Запуск ивента (перед этим, нужно распределить игроков на игровые команды)", ComponentUtils.White))));
-        player.sendMessage(Component.text("  /st stop", ComponentUtils.White).hoverEvent(HoverEvent.showText(Component.text("Остановка ивента (убирает скорборд и возвращает игроков)", ComponentUtils.White))));
+        player.sendMessage(Component.text("  /st start", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Запуск ивента (перед этим, нужно распределить игроков на игровые команды)", ComponentUtils.White))));
+        player.sendMessage(Component.text("  /st stop", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Остановка ивента (убирает скорборд и возвращает игроков)", ComponentUtils.White))));
         player.sendMessage(Component.text(" ")
                 .append(Component.text("===========================", ComponentUtils.Yellow)));
     }

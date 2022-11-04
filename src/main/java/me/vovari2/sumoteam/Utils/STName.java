@@ -26,6 +26,8 @@ public enum STName {
         return effect;
     }
 
+    public final static STName[] listGameTeam = new STName[]{STName.RED, STName.BLUE, STName.GREEN, STName.YELLOW};
+
     public static STName getName(String str){
         if (str.equals("-"))
             return STName.UNSET;

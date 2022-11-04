@@ -11,7 +11,7 @@ public class TextUtils {
     public static Component getEditText(String text){
         return Component.text("[", ComponentUtils.Aqua, TextDecoration.BOLD).append(Component.text("✎").decoration(TextDecoration.BOLD, false)).append(Component.text("] ", ComponentUtils.Aqua, TextDecoration.BOLD)).append(Component.text(text, ComponentUtils.White).decoration(TextDecoration.BOLD, false));}
     public static Component getWarningText(String text){
-        return Component.text("[!] ", ComponentUtils.Yellow, TextDecoration.BOLD).append(Component.text(text, ComponentUtils.White).decoration(TextDecoration.BOLD, false));}
+        return Component.text("[!] ", ComponentUtils.Yellow, TextDecoration.BOLD).append(Component.text(text, ComponentUtils.Gray).decoration(TextDecoration.BOLD, false));}
     public static Component getReadyText(String text){
         return Component.text("[", ComponentUtils.Green, TextDecoration.BOLD).append(Component.text("✔").decoration(TextDecoration.BOLD, false)).append(Component.text("] ", ComponentUtils.Green, TextDecoration.BOLD)).append(Component.text(text, ComponentUtils.White).decoration(TextDecoration.BOLD, false));}
     public static Component getGameText(String text){
