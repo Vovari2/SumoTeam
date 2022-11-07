@@ -1,6 +1,8 @@
 package me.vovari2.sumoteam;
 
 import me.vovari2.sumoteam.Modes.STFieldMode;
+import me.vovari2.sumoteam.Utils.PlayerUtils;
+import me.vovari2.sumoteam.Utils.STPlayer;
 import me.vovari2.sumoteam.Utils.StructureUtils;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -11,6 +13,9 @@ public class SumoTeamSeconds extends BukkitRunnable {
     public static int Seconds = 0;
     @Override
     public void run() {
+        for (STPlayer stPlayer : PlayerUtils.players.values())
+            if (stPlayer.inJump)
+                stPlayer.inJump = false;
         if (SumoTeam.inLobby || SumoTeam.gameOver)
             return;
         if (Seconds >= 20){

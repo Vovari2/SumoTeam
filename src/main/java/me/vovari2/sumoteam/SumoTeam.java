@@ -68,6 +68,7 @@ public final class SumoTeam extends JavaPlugin {
         taskTicks = new SumoTeamTicks();
         taskTicks.runTaskTimer(this, 0L, 1L);
 
+
         taskSeconds = new SumoTeamSeconds();
         taskSeconds.runTaskTimer(this, 0L, 20L);
 

@@ -210,7 +210,6 @@ public class SumoTeamCommands implements CommandExecutor{
                         case "help" -> SumoTeam.HelpMessage(player);
                         case "start" -> {
                             if (SumoTeam.inLobby) {
-                                SumoTeam.timer = 10;
                                 SumoTeam.inLobby = false;
 
                                 SumoTeamSeconds.Seconds = 19;

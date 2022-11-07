@@ -50,12 +50,13 @@ public class SumoTeamListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event){
         Player player = event.getPlayer();
 
-        if (switchTrampoline) {
+        if (switchTrampoline && PlayerUtils.players.containsKey(player.getName()) && !PlayerUtils.players.get(player.getName()).inJump) {
             Location location = player.getLocation();
             if (location.clone().subtract(0.0D, 0.2D, 0.0D).getBlock().getType().equals(Material.EMERALD_BLOCK) && location.getBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE)) {
                 Vector direction = location.getDirection();
                 WorldUtils.world.playSound(location,Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.25F, 1);
-                player.setVelocity(new Vector(direction.getX() * 0.4D * scaleForward,0.85D * scaleUp,direction.getZ() * 0.4D * scaleForward));
+                player.setVelocity(new Vector(direction.getX() * 0.45D * scaleForward,0.95D * scaleUp,direction.getZ() * 0.45D * scaleForward));
+                PlayerUtils.players.get(player.getName()).inJump = true;
             }
         }
 
@@ -74,15 +75,23 @@ public class SumoTeamListener implements Listener {
             }
 
             if (PlayerUtils.players.get(name).inField){
-                if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL)){
-                    if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.RED) && WorldUtils.isOnCenter(WorldUtils.pointRedZone, player.getLocation(), 6))
+                if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL) && !PlayerUtils.players.get(player.getName()).inJump){
+                    if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.RED) && WorldUtils.isOnCenter(WorldUtils.pointRedZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointRedZone));
-                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.BLUE) && WorldUtils.isOnCenter(WorldUtils.pointBlueZone, player.getLocation(), 6))
+                        PlayerUtils.players.get(player.getName()).inJump = true;
+                    }
+                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.BLUE) && WorldUtils.isOnCenter(WorldUtils.pointBlueZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointBlueZone));
-                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.GREEN) && WorldUtils.isOnCenter(WorldUtils.pointGreenZone, player.getLocation(), 6))
+                        PlayerUtils.players.get(player.getName()).inJump = true;
+                    }
+                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.GREEN) && WorldUtils.isOnCenter(WorldUtils.pointGreenZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointGreenZone));
-                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.YELLOW) && WorldUtils.isOnCenter(WorldUtils.pointYellowZone, player.getLocation(), 6))
+                        PlayerUtils.players.get(player.getName()).inJump = true;
+                    }
+                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.YELLOW) && WorldUtils.isOnCenter(WorldUtils.pointYellowZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointYellowZone));
+                        PlayerUtils.players.get(player.getName()).inJump = true;
+                    }
                 }
 
                 double X = player.getLocation().getX(), Y = player.getLocation().getY(), Z = player.getLocation().getZ();

@@ -5,13 +5,11 @@ import org.bukkit.entity.Player;
 public class STPlayer {
     public Player player;
     public boolean inField;
-    public boolean isLive;
-    public int timeDeath;
+    public boolean inJump;
 
     public STPlayer(Player player){
         this.player = player;
         inField = false;
-        isLive = true;
-        timeDeath = 0;
+        inJump = false;
     }
 }
