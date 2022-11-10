@@ -59,7 +59,7 @@ public class ScoreboardUtils {
     }
     public static void ReloadScores(){
         String[] newArray = UpdateScores();
-        for (int i = 3; i < 6; i++)
+        for (int i = 3; i < 7; i++)
             if (!scores[i].equals(newArray[i])){
                 objective.getScore(scores[i]).resetScore();
                 objective.getScore(newArray[i]).setScore(i);
@@ -73,6 +73,6 @@ public class ScoreboardUtils {
                 return ChatColor.RED + "" + ChatColor.BOLD + "✗";
             return String.valueOf(team.team.getSize());
         }
-        else return ChatColor.GOLD + Integer.toString((int)team.points);
+        else return ChatColor.GOLD + Integer.toString(team.points);
     }
 }

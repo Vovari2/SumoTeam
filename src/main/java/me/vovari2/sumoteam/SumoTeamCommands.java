@@ -177,12 +177,12 @@ public class SumoTeamCommands implements CommandExecutor{
                                             int countDefault = arrayDefault.length;
                                             Player selectPlayer;
                                             if (countDefault > 2) {
-                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault - 1)]);
+                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[Math.abs(new Random().nextInt() % (countDefault - 1))]);
                                                 JoinTeam(SumoTeam.teams.get(STName.GREEN), selectPlayer);
                                             }
                                             arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
                                             if (countDefault > 1) {
-                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(countDefault - 1)]);
+                                                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[Math.abs(new Random().nextInt() % (countDefault - 1))]);
                                                 JoinTeam(SumoTeam.teams.get(STName.BLUE), selectPlayer);
                                             }
                                             arrayDefault = SumoTeam.ConvertToArrayString(SumoTeam.teams.get(STName.DEFAULT).team.getEntries());
@@ -210,19 +210,7 @@ public class SumoTeamCommands implements CommandExecutor{
                         case "help" -> SumoTeam.HelpMessage(player);
                         case "start" -> {
                             if (SumoTeam.inLobby) {
-                                SumoTeam.inLobby = false;
-
-                                SumoTeamSeconds.Seconds = 19;
-
-                                StartTeam(SumoTeam.teams.get(STName.RED));
-                                StartTeam(SumoTeam.teams.get(STName.BLUE));
-                                StartTeam(SumoTeam.teams.get(STName.GREEN));
-                                StartTeam(SumoTeam.teams.get(STName.YELLOW));
-
-                                player.sendMessage(TextUtils.getReadyText(ChatColor.GREEN + "Ивент начинается!"));
-
-                                ScoreboardUtils.scores = ScoreboardUtils.CreateScores();
-                                ScoreboardUtils.LoadScores();
+                                SumoTeamSeconds.startCounter = 10;
 
                                 if (SumoTeam.fieldMode.equals(STFieldMode.ICE_PLATFORM) && SumoTeam.countIce > 0){
                                     StructureUtils.honeyCombs[23].typeBreak = BreakType.SPAWN;
@@ -239,6 +227,8 @@ public class SumoTeamCommands implements CommandExecutor{
                         case "stop" -> {
                             if (!SumoTeam.inLobby) {
                                 PlayerUtils.playerHits = new HashMap<>();
+
+                                SumoTeamSeconds.startCounter = 11;
 
                                 SumoTeam.inLobby = true;
                                 SumoTeam.gameOver = false;
@@ -262,10 +252,14 @@ public class SumoTeamCommands implements CommandExecutor{
                                 player.sendMessage(TextUtils.getWarningText(ChatColor.GRAY + "Ивент ещё не начался!"));
                         }
                         case "gamemode" -> {
-                            if (args.length > 2)
+                            if (args.length > 3)
                                 TextUtils.errorTooManyArguments(player);
-                            else if (args.length == 1)
-                                player.sendMessage(TextUtils.getReadyText("Режим игры: " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
+                            else if (args.length == 1){
+                                String message = "Режим игры: " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name();
+                                if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL))
+                                    message += " " + SumoTeam.maxPoint + " очков";
+                                player.sendMessage(TextUtils.getReadyText(message));
+                            }
                             else {
                                 if (SumoTeam.inLobby) {
                                     switch (args[1].toLowerCase()) {
@@ -276,6 +270,15 @@ public class SumoTeamCommands implements CommandExecutor{
                                         case "king_of_the_hill" -> {
                                             SumoTeam.gameMode = STGameMode.KING_OF_THE_HILL;
                                             player.sendMessage(TextUtils.getEditText("Режим игры изменён на " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
+                                            if (args.length == 3) {
+                                                try {
+                                                    SumoTeam.maxPoint = Integer.parseInt(args[2]);
+                                                } catch (Exception error) {
+                                                    TextUtils.errorCommandIncorrectly(player);
+                                                    break;
+                                                }
+                                                player.sendMessage(TextUtils.getEditText("Количество очкоtв изменёно на " + ChatColor.GOLD + SumoTeam.maxPoint));
+                                            }
                                         }
                                         default -> TextUtils.errorCommandIncorrectly(player);
                                     }
@@ -372,7 +375,7 @@ public class SumoTeamCommands implements CommandExecutor{
             if (teamDefault.team.getSize() == 1)
                 selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[0]);
             else
-                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[new Random().nextInt(teamDefault.team.getSize() - 1)]);
+                selectPlayer = Bukkit.getServer().getPlayer(arrayDefault[Math.abs(new Random().nextInt() % (teamDefault.team.getSize() - 1))]);
             JoinTeam(team, selectPlayer);
         }
     }
@@ -393,7 +396,7 @@ public class SumoTeamCommands implements CommandExecutor{
         }
     }
 
-    private void StartTeam(STTeam team) {
+    public static void StartTeam(STTeam team) {
         for (String playerName : team.team.getEntries()){
             Player selectPlayer = Bukkit.getServer().getPlayer(playerName);
             selectPlayer.teleport(team.field);

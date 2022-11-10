@@ -24,8 +24,17 @@ public class SumoTeamListener implements Listener {
 
     @EventHandler
     public void onInteractBlock(PlayerInteractEvent event){
-        if (switchTrampoline && event.getAction().equals(Action.PHYSICAL) && event.getClickedBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE))
-                event.setCancelled(true);
+        Player player = event.getPlayer();
+        if (switchTrampoline && event.getAction().equals(Action.PHYSICAL) && event.getClickedBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE) && WorldUtils.world.getType(event.getClickedBlock().getLocation().subtract(0,1,0)).equals(Material.EMERALD_BLOCK)){
+            event.setCancelled(true);
+            if (PlayerUtils.players.containsKey(player.getName()) && !PlayerUtils.players.get(player.getName()).inJump){
+                Location location = player.getLocation();
+                Vector direction = location.getDirection();
+                WorldUtils.world.playSound(location,Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.25F, 1);
+                player.setVelocity(new Vector(direction.getX() * 0.6D * scaleForward,0.95D * scaleUp,direction.getZ() * 0.6D * scaleForward));
+                PlayerUtils.players.get(player.getName()).inJump = true;
+            }
+        }
     }
 
     @EventHandler
@@ -49,16 +58,6 @@ public class SumoTeamListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event){
         Player player = event.getPlayer();
-
-        if (switchTrampoline && PlayerUtils.players.containsKey(player.getName()) && !PlayerUtils.players.get(player.getName()).inJump) {
-            Location location = player.getLocation();
-            if (location.clone().subtract(0.0D, 0.2D, 0.0D).getBlock().getType().equals(Material.EMERALD_BLOCK) && location.getBlock().getType().equals(Material.POLISHED_BLACKSTONE_PRESSURE_PLATE)) {
-                Vector direction = location.getDirection();
-                WorldUtils.world.playSound(location,Sound.BLOCK_AMETHYST_BLOCK_HIT, 0.25F, 1);
-                player.setVelocity(new Vector(direction.getX() * 0.45D * scaleForward,0.95D * scaleUp,direction.getZ() * 0.45D * scaleForward));
-                PlayerUtils.players.get(player.getName()).inJump = true;
-            }
-        }
 
         PlayerUtils.add(player);
         if (!WorldUtils.inMap(player.getLocation()))

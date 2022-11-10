@@ -35,6 +35,7 @@ public class PlayerUtils {
             SumoTeam.teams.get(STName.UNSET).team.removeEntity(player);
             players.remove(player.getName());
             player.setScoreboard(ScoreboardUtils.empty);
+            player.getInventory().clear();
         }
     }
 }

@@ -8,6 +8,7 @@ import me.vovari2.sumoteam.Modes.STFieldMode;
 import me.vovari2.sumoteam.Modes.STGameMode;
 import me.vovari2.sumoteam.Utils.*;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -15,22 +16,16 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class SumoTeamTicks extends BukkitRunnable {
 
     public static int Ticks = 0;
+    private static int ScorColor = 170;
     @Override
     public void run() {
         if (SumoTeam.inLobby || SumoTeam.gameOver)
             return;
-        switch(Ticks % 256){
-            case 0 -> ScoreboardUtils.objective.displayName(Component.text("S", ComponentUtils.Yellow, TextDecoration.BOLD).append(Component.text("UMOTEAM", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 2 -> ScoreboardUtils.objective.displayName(Component.text("S", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("U", ComponentUtils.Yellow, TextDecoration.BOLD)).append(Component.text("MOTEAM", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 4 -> ScoreboardUtils.objective.displayName(Component.text("SU", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("M", ComponentUtils.Yellow, TextDecoration.BOLD)).append(Component.text("OTEAM", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 6 -> ScoreboardUtils.objective.displayName(Component.text("SUM", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("O", ComponentUtils.Yellow, TextDecoration.BOLD)).append(Component.text("TEAM", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 8 -> ScoreboardUtils.objective.displayName(Component.text("SUMO", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("T", ComponentUtils.Yellow, TextDecoration.BOLD)).append(Component.text("EAM", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 10 -> ScoreboardUtils.objective.displayName(Component.text("SUMOT", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("E", ComponentUtils.Yellow, TextDecoration.BOLD)).append(Component.text("AM", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 12 -> ScoreboardUtils.objective.displayName(Component.text("SUMOTE", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("A", ComponentUtils.Yellow, TextDecoration.BOLD)).append(Component.text("M", ComponentUtils.Gold, TextDecoration.BOLD)));
-            case 14 -> ScoreboardUtils.objective.displayName(Component.text("SUMOTEA", ComponentUtils.White, TextDecoration.BOLD).append(Component.text("M", ComponentUtils.Yellow, TextDecoration.BOLD)));
-            case 16, 24 -> ScoreboardUtils.objective.displayName(Component.text("SUMOTEAM", ComponentUtils.White, TextDecoration.BOLD));
-            case 20, 28 -> ScoreboardUtils.objective.displayName(Component.text("SUMOTEAM", ComponentUtils.Gold, TextDecoration.BOLD));
-        }
+        if (Ticks >= 96 && Ticks < 128)
+            ScorColor-=2;
+        else if (Ticks >= 128 && Ticks < 160)
+            ScorColor+=2;
+        ScoreboardUtils.objective.displayName(Component.text("SUMOTEAM", TextColor.color(252, ScorColor ,9 ), TextDecoration.BOLD));
         if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL)) {
             for (int i = 0; i < 3; i++){
                 WorldUtils.world.spawnParticle(Particle.END_ROD, VectorUtils.RandomPointSphere(WorldUtils.pointCenterZone), 1, 0.0D, 0.0D, 0.0D, 0.0D);
@@ -49,7 +44,7 @@ public class SumoTeamTicks extends BukkitRunnable {
                 if ((int) team.pointsF > team.points)   {
                     team.points = (int) team.pointsF;
                     ScoreboardUtils.ReloadScores();
-                    if (team.points >= 100)
+                    if (team.points >= SumoTeam.maxPoint)
                         team.WinTeam();
                 }
             }

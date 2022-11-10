@@ -76,11 +76,11 @@ public class SumoTeamInventory {
 
     public static void giveItems(STName teamName, Player player){
         player.getInventory().clear();
-        switch (teamName){
-            case RED: giveItemsRed(player); break;
-            case BLUE: giveItemsBlue(player); break;
-            case GREEN: giveItemsGreen(player); break;
-            case YELLOW: giveItemsYellow(player); break;
+        switch (teamName) {
+            case RED -> giveItemsRed(player);
+            case BLUE -> giveItemsBlue(player);
+            case GREEN -> giveItemsGreen(player);
+            case YELLOW -> giveItemsYellow(player);
         }
     }
     // Красная команда

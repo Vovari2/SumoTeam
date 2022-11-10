@@ -115,14 +115,60 @@ public final class SumoTeam extends JavaPlugin {
                 .append(Component.text("[max/load/save]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительные параметры:").append(Component.text("\n  - max (Распределение всех игроков)\n  - load (Загрузить сохранённый состав команд игроков)\n  - save (Сохранить состав команд игроков)", ComponentUtils.Gray))))));
         player.sendMessage(Component.text("  /st return", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Возвращение игроков в команду по умолчанию", ComponentUtils.White))));
         player.sendMessage(Component.text("  /st gamemode ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Режим проведения ивента", ComponentUtils.White)))
-                .append(Component.text("[CLASSIC/KING_OF_THE_HILL]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы игры:").append(Component.text("\n  - CLASSIC (Каждая команда должна скинуть всех своих противников)\n  - ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" (Очки добавляются только на центре. Нужно набрать больше, чем у других команд)", ComponentUtils.Gray)))))));
+                .append(Component.text("[CLASSIC/KING_OF_THE_HILL]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы игры:").append(Component.text("\n  - CLASSIC (Каждая команда должна скинуть всех своих противников)\n  - ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" (Очки добавляются только на центре. Нужно набрать больше, чем у других команд)", ComponentUtils.Gray))))))
+                        .append(Component.text(" [Параметр]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" указывается количество очков, которое нужно набрать для победы", ComponentUtils.Gray)))))));
         player.sendMessage(Component.text("  /st fieldmode ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Режим изменения поля", ComponentUtils.White)))
                 .append(Component.text("[CLASSIC/ICE_PLATFORM]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы поля:").append(Component.text("\n  - CLASSIC (Поле не изменяется)\n  - ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" (Каждые несколько секунд, поле заменяет некоторые соты на лёд)", ComponentUtils.Gray))))))
-                .append(Component.text(" [Параметр настройки]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" указывается процент заполения поля льдом", ComponentUtils.Gray)))))));
+                .append(Component.text(" [Параметр]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" указывается процент заполения поля льдом", ComponentUtils.Gray)))))));
         player.sendMessage(Component.text("  /st start", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Запуск ивента (перед этим, нужно распределить игроков на игровые команды)", ComponentUtils.White))));
         player.sendMessage(Component.text("  /st stop", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Остановка ивента (убирает скорборд и возвращает игроков)", ComponentUtils.White))));
         player.sendMessage(Component.text(" ")
                 .append(Component.text("===========================", ComponentUtils.Yellow)));
+    }
+
+    public static void InfoMessage(Player player){
+        player.sendMessage("");
+        player.sendMessage(ComponentUtils.lineStyle);
+        if (gameMode.equals(STGameMode.CLASSIC)){
+            player.sendMessage(Component.text("           Режим игры: ")
+                    .append(Component.text(gameMode.toString(), ComponentUtils.Gray)
+                    .append(Component.text("\n   Для победы необходимо скинуть\n    всех игроков из других команд.\n После падения игроки возвращаются\n           в комнату ожидания.", ComponentUtils.Gray))));
+        }
+        else {
+            player.sendMessage(Component.text("     Режим игры: ")
+                    .append(Component.text(gameMode.toString(), ComponentUtils.Gold))
+                    .append(Component.text("\n         Для победы необходимо\n            набрать ", ComponentUtils.Gray))
+                    .append(Component.text(maxPoint, ComponentUtils.Gold))
+                    .append(Component.text(" очков.\n    Очки выдаются на центре карты.\n  После падения, игроки появляются\n       на спавне своей команды.\n ", ComponentUtils.Gray)));
+        }
+        if (fieldMode.equals(STFieldMode.CLASSIC)){
+            player.sendMessage(Component.text("\n           Режим поля: ")
+                    .append(Component.text(fieldMode.toString(), ComponentUtils.Gray)
+                            .append(Component.text("\n       Поле никак не изменяется.", ComponentUtils.Gray))));
+        }
+        else {
+            if (countIce == 0){
+                player.sendMessage(Component.text("\n       Режим поля: ")
+                        .append(Component.text(fieldMode.toString(), ComponentUtils.Aqua)
+                                .append(Component.text("\n     Поле заполнено льдом на ", ComponentUtils.Gray))
+                                .append(Component.text("0%", ComponentUtils.Aqua)).append(Component.text("\n     поэтому поле не изменяется.", ComponentUtils.Gray))));
+            }
+            else if (countIce == 89){
+                player.sendMessage(Component.text("\n       Режим поля: ")
+                        .append(Component.text(fieldMode.toString(), ComponentUtils.Aqua)
+                                .append(Component.text("\n    Поле заполнено льдом на ", ComponentUtils.Gray))
+                                .append(Component.text("100%", ComponentUtils.Aqua))
+                                .append(Component.text(".\n  Все ледяные платформы ломаются,\n       если на них долго стоять.", ComponentUtils.Gray))));
+            }
+            else {
+                player.sendMessage(Component.text("\n        Режим поля: ")
+                        .append(Component.text(fieldMode.toString(), ComponentUtils.Aqua)
+                                .append(Component.text("\n    Поле заполнено льдом на ", ComponentUtils.Gray))
+                                .append(Component.text(fillProcent + "%", ComponentUtils.Aqua))
+                                .append(Component.text(".\n  Все ледяные платформы ломаются,\n       если на них долго стоять.\n      Каждые 20 минут платформы\n      случайно перезаполняются.", ComponentUtils.Gray))));
+            }
+        }
+        player.sendMessage(ComponentUtils.lineStyle);
     }
 
 
