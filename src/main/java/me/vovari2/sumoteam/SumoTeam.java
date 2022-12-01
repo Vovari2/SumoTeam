@@ -25,6 +25,7 @@ public final class SumoTeam extends JavaPlugin {
 
     public static boolean inLobby = true;
     public static STGameMode gameMode = STGameMode.CLASSIC;
+    public static int maxLives = 5;
     public static int maxPoint = 100;
     public static STFieldMode fieldMode = STFieldMode.CLASSIC;
     public static int fillProcent = 100;
@@ -55,7 +56,7 @@ public final class SumoTeam extends JavaPlugin {
         ComponentUtils.Initialization();
         WorldUtils.Initialization(getServer().getWorld(getConfig().getString("World")));
         ScoreboardUtils.Initialization();
-        STTeam.Initialization();
+        STTeam.Initialization(maxLives);
         StructureUtils.Initialization();
         PlayerUtils.Initialization();
         VectorUtils.Initialization();
@@ -116,7 +117,8 @@ public final class SumoTeam extends JavaPlugin {
         player.sendMessage(Component.text("  /st return", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Возвращение игроков в команду по умолчанию", ComponentUtils.White))));
         player.sendMessage(Component.text("  /st gamemode ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Режим проведения ивента", ComponentUtils.White)))
                 .append(Component.text("[CLASSIC/KING_OF_THE_HILL]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы игры:").append(Component.text("\n  - CLASSIC (Каждая команда должна скинуть всех своих противников)\n  - ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" (Очки добавляются только на центре. Нужно набрать больше, чем у других команд)", ComponentUtils.Gray))))))
-                        .append(Component.text(" [Параметр]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" указывается количество очков, которое нужно набрать для победы", ComponentUtils.Gray)))))));
+                .append(Component.text(" [Параметр]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима CLASSIC", ComponentUtils.Gray)).append(Component.text("", ComponentUtils.Gold).append(Component.text(" указывается количество жизней у каждой команды", ComponentUtils.Gray)))
+                        .append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("KING_OF_THE_HILL", ComponentUtils.Gold).append(Component.text(" указывается количество очков, которое нужно набрать для победы", ComponentUtils.Gray)))))));
         player.sendMessage(Component.text("  /st fieldmode ", ComponentUtils.Green).hoverEvent(HoverEvent.showText(Component.text("Режим изменения поля", ComponentUtils.White)))
                 .append(Component.text("[CLASSIC/ICE_PLATFORM]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Режимы поля:").append(Component.text("\n  - CLASSIC (Поле не изменяется)\n  - ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" (Каждые несколько секунд, поле заменяет некоторые соты на лёд)", ComponentUtils.Gray))))))
                 .append(Component.text(" [Параметр]", ComponentUtils.Gray).hoverEvent(HoverEvent.showText(Component.text("Дополнительный параметр для настройки режима:").append(Component.text("\n  - Для режима ", ComponentUtils.Gray)).append(Component.text("ICE_PLATFORM", ComponentUtils.Aqua).append(Component.text(" указывается процент заполения поля льдом", ComponentUtils.Gray)))))));
@@ -132,14 +134,14 @@ public final class SumoTeam extends JavaPlugin {
         if (gameMode.equals(STGameMode.CLASSIC)){
             player.sendMessage(Component.text("           Режим игры: ")
                     .append(Component.text(gameMode.toString(), ComponentUtils.Gray)
-                    .append(Component.text("\n   Для победы необходимо скинуть\n    всех игроков из других команд.\n После падения игроки возвращаются\n           в комнату ожидания.", ComponentUtils.Gray))));
+                    .append(Component.text("\n   Для победы необходимо скинуть\n    всех игроков из других команд.\n   Каждая команда имеет ", ComponentUtils.Gray).append(Component.text(maxLives, ComponentUtils.Green)).append(Component.text(" жизней, \n после падения тратиться одна жизнь. \n       Когда жизни закончаться, \n      игроки будут возвращаться\n           в комнату ожидания.", ComponentUtils.Gray)))));
         }
         else {
             player.sendMessage(Component.text("     Режим игры: ")
                     .append(Component.text(gameMode.toString(), ComponentUtils.Gold))
                     .append(Component.text("\n         Для победы необходимо\n            набрать ", ComponentUtils.Gray))
                     .append(Component.text(maxPoint, ComponentUtils.Gold))
-                    .append(Component.text(" очков.\n    Очки выдаются на центре карты.\n  После падения, игроки появляются\n       на спавне своей команды.\n ", ComponentUtils.Gray)));
+                    .append(Component.text(" очков.\n Очки можно получить на центре карты.\n  После падения, игроки появляются\n       на спавне своей команды.\n ", ComponentUtils.Gray)));
         }
         if (fieldMode.equals(STFieldMode.CLASSIC)){
             player.sendMessage(Component.text("\n           Режим поля: ")

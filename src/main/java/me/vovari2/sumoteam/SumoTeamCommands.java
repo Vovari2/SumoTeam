@@ -258,6 +258,8 @@ public class SumoTeamCommands implements CommandExecutor{
                                 String message = "Режим игры: " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name();
                                 if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL))
                                     message += " " + SumoTeam.maxPoint + " очков";
+                                else if (SumoTeam.gameMode.equals(STGameMode.CLASSIC))
+                                    message += " " + SumoTeam.maxLives + " жизней";
                                 player.sendMessage(TextUtils.getReadyText(message));
                             }
                             else {
@@ -266,6 +268,15 @@ public class SumoTeamCommands implements CommandExecutor{
                                         case "classic" -> {
                                             SumoTeam.gameMode = STGameMode.CLASSIC;
                                             player.sendMessage(TextUtils.getEditText("Режим игры изменён на " + SumoTeam.gameMode.getChatColor() + SumoTeam.gameMode.name()));
+                                            if (args.length == 3) {
+                                                try {
+                                                    SumoTeam.maxLives = Integer.parseInt(args[2]);
+                                                } catch (Exception error) {
+                                                    TextUtils.errorCommandIncorrectly(player);
+                                                    break;
+                                                }
+                                                player.sendMessage(TextUtils.getEditText("Количество жизней у команд изменёно на " + ChatColor.GREEN + SumoTeam.maxLives));
+                                            }
                                         }
                                         case "king_of_the_hill" -> {
                                             SumoTeam.gameMode = STGameMode.KING_OF_THE_HILL;
@@ -277,7 +288,7 @@ public class SumoTeamCommands implements CommandExecutor{
                                                     TextUtils.errorCommandIncorrectly(player);
                                                     break;
                                                 }
-                                                player.sendMessage(TextUtils.getEditText("Количество очкоtв изменёно на " + ChatColor.GOLD + SumoTeam.maxPoint));
+                                                player.sendMessage(TextUtils.getEditText("Количество очков изменёно на " + ChatColor.GOLD + SumoTeam.maxPoint));
                                             }
                                         }
                                         default -> TextUtils.errorCommandIncorrectly(player);

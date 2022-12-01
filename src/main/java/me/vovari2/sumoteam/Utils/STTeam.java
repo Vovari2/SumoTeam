@@ -30,6 +30,7 @@ public class STTeam {
     public int colorR;
     public int colorG;
     public int colorB;
+    public int lives;
     public ArrayList<Player> fallPlayers;
     public STTeam(STName teamName, String wordGS, ChatColor CColor, int R, int G, int B, Team ITeam) {
         name = teamName;
@@ -43,6 +44,20 @@ public class STTeam {
         team.setAllowFriendlyFire(false);
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         fallPlayers = new ArrayList<>();
+    }
+    public STTeam(STName teamName, String wordGS, ChatColor CColor, int R, int G, int B, Team ITeam, int maxLives) {
+        name = teamName;
+        word = CColor + wordGS;
+        chatColor = CColor;
+        colorR = R;
+        colorG = G;
+        colorB = B;
+        team = ITeam;
+        team.color(NamedTextColor.nearestTo(getTextColor()));
+        team.setAllowFriendlyFire(false);
+        team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
+        fallPlayers = new ArrayList<>();
+        lives = maxLives;
     }
     public Color getColor(){
         return Color.fromRGB(colorR, colorG, colorB);
@@ -97,21 +112,21 @@ public class STTeam {
         WorldUtils.replace(new Location(WorldUtils.world, -6757, 149, 1234), new Location (WorldUtils.world, -6741, 157, 1234), Material.BARRIER, Material.AIR);
     }
 
-    public static void Initialization(){
+    public static void Initialization(int maxLives){
         SumoTeam.teams = new HashMap<>();
-        SumoTeam.teams.put(STName.RED, new STTeam(STName.RED, "Красных", ChatColor.RED,255, 85, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamRed")));
+        SumoTeam.teams.put(STName.RED, new STTeam(STName.RED, "Красных", ChatColor.RED,255, 85, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamRed"), maxLives));
         SumoTeam.teams.get(STName.RED).room = new Location(WorldUtils.world, -6756.5, 72, 1231.5,-90,0);
         SumoTeam.teams.get(STName.RED).field = new Location(WorldUtils.world, -6788.5, 141, 1271.5, -135, 0);
 
-        SumoTeam.teams.put(STName.BLUE, new STTeam(STName.BLUE,"Синих", ChatColor.BLUE,85, 85, 255, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamBlue")));
+        SumoTeam.teams.put(STName.BLUE, new STTeam(STName.BLUE,"Синих", ChatColor.BLUE,85, 85, 255, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamBlue"), maxLives));
         SumoTeam.teams.get(STName.BLUE).room = new Location(WorldUtils.world, -6740.5, 72, 1221.5,90,0);
         SumoTeam.teams.get(STName.BLUE).field = new Location(WorldUtils.world, -6708.5, 141, 1181.5, 45, 0);
 
-        SumoTeam.teams.put(STName.GREEN, new STTeam(STName.GREEN,"Зелёных", ChatColor.GREEN,85, 255, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamGreen")));
+        SumoTeam.teams.put(STName.GREEN, new STTeam(STName.GREEN,"Зелёных", ChatColor.GREEN,85, 255, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamGreen"), maxLives));
         SumoTeam.teams.get(STName.GREEN).room = new Location(WorldUtils.world, -6756.5, 72, 1221.5, -90, 0);
         SumoTeam.teams.get(STName.GREEN).field = new Location(WorldUtils.world, -6788.5, 141, 1181.5, -45, 0);
 
-        SumoTeam.teams.put(STName.YELLOW, new STTeam(STName.YELLOW,"Жёлтых", ChatColor.YELLOW,255, 255, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamYellow")));
+        SumoTeam.teams.put(STName.YELLOW, new STTeam(STName.YELLOW,"Жёлтых", ChatColor.YELLOW,255, 255, 85, ScoreboardUtils.scoreboard.registerNewTeam("SumoTeamYellow"), maxLives));
         SumoTeam.teams.get(STName.YELLOW).room = new Location(WorldUtils.world, -6740.5, 72, 1231.5,90,0);
         SumoTeam.teams.get(STName.YELLOW).field = new Location(WorldUtils.world, -6708.5, 141, 1271.5, 135, 0);
 

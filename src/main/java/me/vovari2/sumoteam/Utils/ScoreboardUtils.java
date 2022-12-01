@@ -69,9 +69,11 @@ public class ScoreboardUtils {
 
     private static String OutputNumericTeam(STTeam team) {
         if (SumoTeam.gameMode.equals(STGameMode.CLASSIC)) {
-            if (team.team.getSize() == 0)
-                return ChatColor.RED + "" + ChatColor.BOLD + "✗";
-            return String.valueOf(team.team.getSize());
+            if (team.lives == 0)
+                if (team.team.getSize() > 0)
+                    return ChatColor.RED + String.valueOf(team.team.getSize());
+                else return ChatColor.RED + "" + ChatColor.BOLD + "✗";
+            return ChatColor.GREEN + String.valueOf(team.lives);
         }
         else return ChatColor.GOLD + Integer.toString(team.points);
     }

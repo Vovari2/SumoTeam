@@ -72,22 +72,22 @@ public class SumoTeamListener implements Listener {
             else if (player.getLocation().distance(WorldUtils.pointDefault) > 3 && SumoTeam.teams.get(STName.DEFAULT).team.getEntries().contains(name)){
                 SumoTeam.teams.get(STName.DEFAULT).team.removeEntity(player);
             }
-
+            STTeam team = STTeam.getPlayerTeam(player.getName());
             if (PlayerUtils.players.get(name).inField){
                 if (SumoTeam.gameMode.equals(STGameMode.KING_OF_THE_HILL) && !PlayerUtils.players.get(player.getName()).inJump){
-                    if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.RED) && WorldUtils.isOnCenter(WorldUtils.pointRedZone, player.getLocation(), 6)){
+                    if (!team.name.equals(STName.RED) && WorldUtils.isOnCenter(WorldUtils.pointRedZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointRedZone));
                         PlayerUtils.players.get(player.getName()).inJump = true;
                     }
-                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.BLUE) && WorldUtils.isOnCenter(WorldUtils.pointBlueZone, player.getLocation(), 6)){
+                    else if (!team.name.equals(STName.BLUE) && WorldUtils.isOnCenter(WorldUtils.pointBlueZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointBlueZone));
                         PlayerUtils.players.get(player.getName()).inJump = true;
                     }
-                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.GREEN) && WorldUtils.isOnCenter(WorldUtils.pointGreenZone, player.getLocation(), 6)){
+                    else if (!team.name.equals(STName.GREEN) && WorldUtils.isOnCenter(WorldUtils.pointGreenZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointGreenZone));
                         PlayerUtils.players.get(player.getName()).inJump = true;
                     }
-                    else if (!STTeam.getPlayerTeam(player.getName()).name.equals(STName.YELLOW) && WorldUtils.isOnCenter(WorldUtils.pointYellowZone, player.getLocation(), 6)){
+                    else if (!team.name.equals(STName.YELLOW) && WorldUtils.isOnCenter(WorldUtils.pointYellowZone, player.getLocation(), 6)){
                         player.setVelocity(VectorUtils.getVector(player.getLocation(), WorldUtils.pointYellowZone));
                         PlayerUtils.players.get(player.getName()).inJump = true;
                     }
@@ -99,14 +99,14 @@ public class SumoTeamListener implements Listener {
                     for (STPlayer selectSTPlayer : PlayerUtils.players.values()) {
                         Player selectPlayer = selectSTPlayer.player;
                         if (!PlayerUtils.playerHits.containsKey(player.getName()))
-                            selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getPlayerTeam(player.getName()).getTextColor()).append(Component.text(" упал", ComponentUtils.White))));
+                            selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, team.getTextColor()).append(Component.text(" упал", ComponentUtils.White))));
                         else if (PlayerUtils.players.containsKey(PlayerUtils.playerHits.get(name)))
-                            selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, STTeam.getPlayerTeam(player.getName()).getTextColor()).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(PlayerUtils.playerHits.get(name), STTeam.getPlayerTeam(PlayerUtils.players.get(PlayerUtils.playerHits.get(name)).player.getName()).getTextColor()))));
+                            selectPlayer.sendMessage(TextUtils.getGameText(Component.text(name, team.getTextColor()).append(Component.text(" был скинут ", ComponentUtils.White)).append(Component.text(PlayerUtils.playerHits.get(name), STTeam.getPlayerTeam(PlayerUtils.players.get(PlayerUtils.playerHits.get(name)).player.getName()).getTextColor()))));
                         if (selectPlayer.getName().equals(PlayerUtils.playerHits.get(name)))
                             selectPlayer.playSound(selectPlayer.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 50, 1);
                     }
-                    if (SumoTeam.gameMode.equals(STGameMode.CLASSIC)) {
-                        STTeam.getPlayerTeam(player.getName()).fallPlayers.add(Bukkit.getPlayer(player.getName()));
+                    if (SumoTeam.gameMode.equals(STGameMode.CLASSIC) && team.lives <= 0) {
+                        team.fallPlayers.add(Bukkit.getPlayer(player.getName()));
 
                         SumoTeamCommands.LeaveTeam(player);
                         player.getInventory().clear();
@@ -129,6 +129,8 @@ public class SumoTeamListener implements Listener {
                     else {
                         player.teleport(STTeam.getPlayerTeam(player.getName()).field);
                         PlayerUtils.playerHits.remove(player.getName());
+                        team.lives--;
+                        ScoreboardUtils.ReloadScores();
                     }
                 }
             }
