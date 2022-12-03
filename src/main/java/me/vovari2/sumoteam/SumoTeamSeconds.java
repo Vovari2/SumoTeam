@@ -19,7 +19,7 @@ public class SumoTeamSeconds extends BukkitRunnable {
         for (STPlayer stPlayer : PlayerUtils.players.values())
             if (stPlayer.inJump)
                 stPlayer.inJump = false;
-        if ((startCounter > 0 && startCounter < 6) || startCounter == 10){
+        if ((startCounter > -1 && startCounter < 6) || startCounter == 10){
             for (STPlayer stPlayer : PlayerUtils.players.values()){
                 if (startCounter == 10)
                     SumoTeam.InfoMessage(stPlayer.player);
@@ -28,7 +28,6 @@ public class SumoTeamSeconds extends BukkitRunnable {
             }
         }
         if (startCounter > -1 && startCounter < 11){
-            startCounter--;
             if(startCounter == 0){
                 SumoTeam.inLobby = false;
 
@@ -45,6 +44,7 @@ public class SumoTeamSeconds extends BukkitRunnable {
                 for (STPlayer stPlayer : PlayerUtils.players.values())
                     stPlayer.player.playSound(stPlayer.player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 1F, 1F);
             }
+            startCounter--;
         }
         if (SumoTeam.inLobby || SumoTeam.gameOver)
             return;

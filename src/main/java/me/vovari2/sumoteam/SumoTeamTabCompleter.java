@@ -46,6 +46,7 @@ public class SumoTeamTabCompleter implements TabCompleter {
                         case "division":{
                             List<String> tools = new ArrayList<>();
                             tools.add("max");
+                            tools.add("duo");
                             tools.add("save");
                             tools.add("load");
                             tools.removeIf(str -> !str.toLowerCase().startsWith(args[1].toLowerCase()));

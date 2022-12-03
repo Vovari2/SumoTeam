@@ -193,6 +193,26 @@ public class SumoTeamCommands implements CommandExecutor{
 
                                             player.sendMessage(TextUtils.getReadyText("Распределено: " + ChatColor.GREEN + (countDefault + countPlayersTeam * 4)));
                                         }
+                                        case "duo" -> {
+                                            int countPlayersTeam = SumoTeam.teams.get(STName.DEFAULT).team.getSize() / 2;
+                                            int countDivision = countPlayersTeam * 2, countNotDivision = SumoTeam.teams.get(STName.DEFAULT).team.getSize() - countDivision;
+                                            DivisionTeam(SumoTeam.teams.get(STName.RED), countPlayersTeam);
+                                            DivisionTeam(SumoTeam.teams.get(STName.BLUE), countPlayersTeam);
+                                            String message = "";
+                                            if (countDivision > 0) {
+                                                message = " Распределено: " + ChatColor.GREEN + countDivision + " ";
+                                                if (countNotDivision > 0)
+                                                    message += "/ ";
+                                            }
+                                            if (countNotDivision > 0)
+                                                message += ChatColor.WHITE + "Не распределено: " + ChatColor.RED + countNotDivision;
+                                            if (countDivision > 0)
+                                                player.sendMessage(TextUtils.getReadyText(message));
+                                            else if (countNotDivision > 0) {
+                                                player.sendMessage(TextUtils.getWarningText(message));
+                                            } else
+                                                player.sendMessage(TextUtils.getWarningText("В команде " + ChatColor.GRAY + "По умолчанию" + ChatColor.WHITE + " нет игроков!"));
+                                        }
                                         default -> TextUtils.errorCommandIncorrectly(player);
                                     }
                                 } else TextUtils.errorCommandIncorrectly(player);
@@ -408,6 +428,7 @@ public class SumoTeamCommands implements CommandExecutor{
     }
 
     public static void StartTeam(STTeam team) {
+        team.lives = SumoTeam.maxLives;
         for (String playerName : team.team.getEntries()){
             Player selectPlayer = Bukkit.getServer().getPlayer(playerName);
             selectPlayer.teleport(team.field);
