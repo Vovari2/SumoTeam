@@ -78,6 +78,8 @@ public final class SumoTeam extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (taskTicks != null)
+            taskTicks.cancel();
 
         SumoTeamCommands.StopTeam(SumoTeam.teams.get(STName.RED));
         SumoTeamCommands.StopTeam(SumoTeam.teams.get(STName.BLUE));

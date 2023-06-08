@@ -44,6 +44,7 @@ public class STTeam {
         team.setAllowFriendlyFire(false);
         team.setOption(Team.Option.COLLISION_RULE, Team.OptionStatus.FOR_OWN_TEAM);
         fallPlayers = new ArrayList<>();
+
     }
     public STTeam(STName teamName, String wordGS, ChatColor CColor, int R, int G, int B, Team ITeam, int maxLives) {
         name = teamName;

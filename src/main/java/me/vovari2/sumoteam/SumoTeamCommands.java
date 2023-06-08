@@ -357,6 +357,7 @@ public class SumoTeamCommands implements CommandExecutor{
                                 plugin.onDisable();
                                 plugin.onEnable();
                             }
+                            TextUtils.getReadyText("Плагин перезагружен!");
                         }
                         default -> TextUtils.errorCommandIncorrectly(player);
                     }
